@@ -14,12 +14,11 @@ import java.io.InputStreamReader;
 
 public class TileManager {
 
-    GamePanel gamePanel;
     public Tile[] tiles;
     public int[][] mapTileNum;
-
     public int spriteCounter = 0;
     public int spriteNum = 1;
+    GamePanel gamePanel;
     BufferedImage rubin_f1, rubin_f2, rubin_f3, rubin_f4, rubin_f5, rubin_f6, rubin_f7, rubin_f8;
 
     public TileManager(GamePanel gamePanel) {
@@ -112,8 +111,8 @@ public class TileManager {
     }
 
     public void stonePush(Vector2D position, Direction direction) {
-        int x = position.x + direction.getDirectionVector().x*48;
-        int y = position.y + direction.getDirectionVector().y*-48;
+        int x = position.x + direction.getDirectionVector().x * 48;
+        int y = position.y + direction.getDirectionVector().y * -48;
 
         int tileCol = 0;
         int tileRow = 0;

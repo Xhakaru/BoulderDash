@@ -5,204 +5,204 @@ import main.KeyHandler;
 import struct.Direction;
 import struct.Vector2D;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
-	protected final GamePanel gamePanel;
-	protected final KeyHandler keyHandler;
-	
-	protected Vector2D position;
-	protected int speed;
-	
-	protected BufferedImage player_gray_u1, player_gray_u2, player_gray_o1, player_gray_o2, player_gray_r1, player_gray_r2, player_gray_l1, player_gray_l2;
-	protected Direction direction;
-	protected Direction xDirection;
-	protected Direction yDirection;
-	
-	protected int spriteCounter = 0;
-	protected int spriteNum = 1;
-	
-	protected Rectangle solidArea;
-	protected boolean collisionOn;
-	protected boolean eat;
-	protected boolean item;
-	protected boolean stone;
+    protected final GamePanel gamePanel;
+    protected final KeyHandler keyHandler;
 
-	protected Entity(GamePanel gamePanel, KeyHandler keyHandler){
-		this.gamePanel = gamePanel;
-		this.keyHandler = keyHandler;
-	}
+    protected Vector2D position;
+    protected int speed;
 
-	public void update(){
-		resetGameloopStats();
-		gp.cChecker.checkTile(this);
-	}
+    protected BufferedImage player_gray_u1, player_gray_u2, player_gray_o1, player_gray_o2, player_gray_r1, player_gray_r2, player_gray_l1, player_gray_l2;
+    protected Direction direction;
+    protected Direction xDirection;
+    protected Direction yDirection;
 
-	private void resetGameloopStats() {
-		collisionOn = false;
-		eat = false;
-		item = false;
-		stone = false;
-	}
+    protected int spriteCounter = 0;
+    protected int spriteNum = 1;
 
-	public Vector2D getPosition() {
-		return position;
-	}
+    protected Rectangle solidArea;
+    protected boolean collisionOn;
+    protected boolean eat;
+    protected boolean item;
+    protected boolean stone;
 
-	public void setPosition(Vector2D position) {
-		this.position = position;
-	}
+    protected Entity(GamePanel gamePanel, KeyHandler keyHandler) {
+        this.gamePanel = gamePanel;
+        this.keyHandler = keyHandler;
+    }
 
-	public int getSpeed() {
-		return speed;
-	}
+    public void update() {
+        resetGameloopStats();
+        gp.cChecker.checkTile(this);
+    }
 
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
+    private void resetGameloopStats() {
+        collisionOn = false;
+        eat = false;
+        item = false;
+        stone = false;
+    }
 
-	public BufferedImage getPlayer_gray_u1() {
-		return player_gray_u1;
-	}
+    public Vector2D getPosition() {
+        return position;
+    }
 
-	public void setPlayer_gray_u1(BufferedImage player_gray_u1) {
-		this.player_gray_u1 = player_gray_u1;
-	}
+    public void setPosition(Vector2D position) {
+        this.position = position;
+    }
 
-	public BufferedImage getPlayer_gray_u2() {
-		return player_gray_u2;
-	}
+    public int getSpeed() {
+        return speed;
+    }
 
-	public void setPlayer_gray_u2(BufferedImage player_gray_u2) {
-		this.player_gray_u2 = player_gray_u2;
-	}
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
-	public BufferedImage getPlayer_gray_o1() {
-		return player_gray_o1;
-	}
+    public BufferedImage getPlayer_gray_u1() {
+        return player_gray_u1;
+    }
 
-	public void setPlayer_gray_o1(BufferedImage player_gray_o1) {
-		this.player_gray_o1 = player_gray_o1;
-	}
+    public void setPlayer_gray_u1(BufferedImage player_gray_u1) {
+        this.player_gray_u1 = player_gray_u1;
+    }
 
-	public BufferedImage getPlayer_gray_o2() {
-		return player_gray_o2;
-	}
+    public BufferedImage getPlayer_gray_u2() {
+        return player_gray_u2;
+    }
 
-	public void setPlayer_gray_o2(BufferedImage player_gray_o2) {
-		this.player_gray_o2 = player_gray_o2;
-	}
+    public void setPlayer_gray_u2(BufferedImage player_gray_u2) {
+        this.player_gray_u2 = player_gray_u2;
+    }
 
-	public BufferedImage getPlayer_gray_r1() {
-		return player_gray_r1;
-	}
+    public BufferedImage getPlayer_gray_o1() {
+        return player_gray_o1;
+    }
 
-	public void setPlayer_gray_r1(BufferedImage player_gray_r1) {
-		this.player_gray_r1 = player_gray_r1;
-	}
+    public void setPlayer_gray_o1(BufferedImage player_gray_o1) {
+        this.player_gray_o1 = player_gray_o1;
+    }
 
-	public BufferedImage getPlayer_gray_r2() {
-		return player_gray_r2;
-	}
+    public BufferedImage getPlayer_gray_o2() {
+        return player_gray_o2;
+    }
 
-	public void setPlayer_gray_r2(BufferedImage player_gray_r2) {
-		this.player_gray_r2 = player_gray_r2;
-	}
+    public void setPlayer_gray_o2(BufferedImage player_gray_o2) {
+        this.player_gray_o2 = player_gray_o2;
+    }
 
-	public BufferedImage getPlayer_gray_l1() {
-		return player_gray_l1;
-	}
+    public BufferedImage getPlayer_gray_r1() {
+        return player_gray_r1;
+    }
 
-	public void setPlayer_gray_l1(BufferedImage player_gray_l1) {
-		this.player_gray_l1 = player_gray_l1;
-	}
+    public void setPlayer_gray_r1(BufferedImage player_gray_r1) {
+        this.player_gray_r1 = player_gray_r1;
+    }
 
-	public BufferedImage getPlayer_gray_l2() {
-		return player_gray_l2;
-	}
+    public BufferedImage getPlayer_gray_r2() {
+        return player_gray_r2;
+    }
 
-	public void setPlayer_gray_l2(BufferedImage player_gray_l2) {
-		this.player_gray_l2 = player_gray_l2;
-	}
+    public void setPlayer_gray_r2(BufferedImage player_gray_r2) {
+        this.player_gray_r2 = player_gray_r2;
+    }
 
-	public Direction getDirection() {
-		return direction;
-	}
+    public BufferedImage getPlayer_gray_l1() {
+        return player_gray_l1;
+    }
 
-	public void setDirection(Direction direction) {
-		this.direction = direction;
-	}
+    public void setPlayer_gray_l1(BufferedImage player_gray_l1) {
+        this.player_gray_l1 = player_gray_l1;
+    }
 
-	public Direction getxDirection() {
-		return xDirection;
-	}
+    public BufferedImage getPlayer_gray_l2() {
+        return player_gray_l2;
+    }
 
-	public void setxDirection(Direction xDirection) {
-		this.xDirection = xDirection;
-	}
+    public void setPlayer_gray_l2(BufferedImage player_gray_l2) {
+        this.player_gray_l2 = player_gray_l2;
+    }
 
-	public Direction getyDirection() {
-		return yDirection;
-	}
+    public Direction getDirection() {
+        return direction;
+    }
 
-	public void setyDirection(Direction yDirection) {
-		this.yDirection = yDirection;
-	}
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
 
-	public int getSpriteCounter() {
-		return spriteCounter;
-	}
+    public Direction getxDirection() {
+        return xDirection;
+    }
 
-	public void setSpriteCounter(int spriteCounter) {
-		this.spriteCounter = spriteCounter;
-	}
+    public void setxDirection(Direction xDirection) {
+        this.xDirection = xDirection;
+    }
 
-	public int getSpriteNum() {
-		return spriteNum;
-	}
+    public Direction getyDirection() {
+        return yDirection;
+    }
 
-	public void setSpriteNum(int spriteNum) {
-		this.spriteNum = spriteNum;
-	}
+    public void setyDirection(Direction yDirection) {
+        this.yDirection = yDirection;
+    }
 
-	public Rectangle getSolidArea() {
-		return solidArea;
-	}
+    public int getSpriteCounter() {
+        return spriteCounter;
+    }
 
-	public void setSolidArea(Rectangle solidArea) {
-		this.solidArea = solidArea;
-	}
+    public void setSpriteCounter(int spriteCounter) {
+        this.spriteCounter = spriteCounter;
+    }
 
-	public boolean isCollisionOn() {
-		return collisionOn;
-	}
+    public int getSpriteNum() {
+        return spriteNum;
+    }
 
-	public void setCollisionOn(boolean collisionOn) {
-		this.collisionOn = collisionOn;
-	}
+    public void setSpriteNum(int spriteNum) {
+        this.spriteNum = spriteNum;
+    }
 
-	public boolean isEat() {
-		return eat;
-	}
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
 
-	public void setEat(boolean eat) {
-		this.eat = eat;
-	}
+    public void setSolidArea(Rectangle solidArea) {
+        this.solidArea = solidArea;
+    }
 
-	public boolean isItem() {
-		return item;
-	}
+    public boolean isCollisionOn() {
+        return collisionOn;
+    }
 
-	public void setItem(boolean item) {
-		this.item = item;
-	}
+    public void setCollisionOn(boolean collisionOn) {
+        this.collisionOn = collisionOn;
+    }
 
-	public boolean isStone() {
-		return stone;
-	}
+    public boolean isEat() {
+        return eat;
+    }
 
-	public void setStone(boolean stone) {
-		this.stone = stone;
-	}
+    public void setEat(boolean eat) {
+        this.eat = eat;
+    }
+
+    public boolean isItem() {
+        return item;
+    }
+
+    public void setItem(boolean item) {
+        this.item = item;
+    }
+
+    public boolean isStone() {
+        return stone;
+    }
+
+    public void setStone(boolean stone) {
+        this.stone = stone;
+    }
 }

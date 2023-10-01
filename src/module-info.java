@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 /**
- * 
+ *
  */
 module BoulderDash {
-	requires java.desktop;
+    requires java.desktop;
 }

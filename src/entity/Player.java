@@ -13,9 +13,9 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
-    private int rubinCounter = 0;
     int varX = 0;
     int varY = 0;
+    private int rubinCounter = 0;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         super(gamePanel, keyHandler);

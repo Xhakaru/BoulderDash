@@ -7,7 +7,8 @@ public enum Direction {
     LEFT(new Vector2D(-1, 0));
 
     private final Vector2D directionVector;
-    Direction(Vector2D directionVector){
+
+    Direction(Vector2D directionVector) {
         this.directionVector = directionVector;
     }
 

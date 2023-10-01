@@ -139,28 +139,24 @@ public class Player extends Entity{
 					varY = -48;
 					gp.tileM.stonePush(worldX, worldY, varX, varY);
 					System.out.println("upEaten");
-					
 		        	break;
 				case "down":
 					varX = 0;
 					varY = 48;
 					gp.tileM.stonePush(worldX, worldY, varX, varY);
 					System.out.println("downEaten");
-
 			        break;
 				case "left":
 					varX = -48;
 					varY = 0;
 					gp.tileM.stonePush(worldX, worldY, varX, varY);
 					System.out.println("leftEaten");
-					
 			        break;
 				case "right":
 					varX = 48;
 					varY = 0;
 					gp.tileM.stonePush(worldX, worldY, varX, varY);
 					System.out.println("rightEaten");
-					
 			        break;
 				}
 			}

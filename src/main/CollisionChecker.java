@@ -28,72 +28,72 @@ public class CollisionChecker {
 		switch(entity.direction) {
 		case "up":
 			entityTopRow = (entityTopWorldY - entity.speed)/gp.tileSize;
-			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+			tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityTopRow];
+			tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityTopRow];
+			if(gp.tileManager.tiles[tileNum1].collision == true || gp.tileManager.tiles[tileNum2].collision == true) {
 				entity.collisionOn = true;
 			}
-			if(gp.tileM.tile[tileNum1].eat == true || gp.tileM.tile[tileNum2].eat == true) {
+			if(gp.tileManager.tiles[tileNum1].eat == true || gp.tileManager.tiles[tileNum2].eat == true) {
 				entity.eat = true;
 			}
-			if(gp.tileM.tile[tileNum1].item == true || gp.tileM.tile[tileNum2].item == true) {
+			if(gp.tileManager.tiles[tileNum1].item == true || gp.tileManager.tiles[tileNum2].item == true) {
 				entity.item = true;
 			}
-			if(gp.tileM.tile[tileNum1].stone == true) {
+			if(gp.tileManager.tiles[tileNum1].stone == true) {
 				entity.stone = true;
 			}
 			break;
 			
 		case "down":
 			entityBottomRow = (entityBottomWorldY + entity.speed)/gp.tileSize;
-			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+			tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
+			tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityBottomRow];
+			if(gp.tileManager.tiles[tileNum1].collision == true || gp.tileManager.tiles[tileNum2].collision == true) {
 				entity.collisionOn = true;
 			}
-			if(gp.tileM.tile[tileNum1].eat == true || gp.tileM.tile[tileNum2].eat == true) {
+			if(gp.tileManager.tiles[tileNum1].eat == true || gp.tileManager.tiles[tileNum2].eat == true) {
 				entity.eat = true;
 			}
-			if(gp.tileM.tile[tileNum1].item == true || gp.tileM.tile[tileNum2].item == true) {
+			if(gp.tileManager.tiles[tileNum1].item == true || gp.tileManager.tiles[tileNum2].item == true) {
 				entity.item = true;
 			}
-			if(gp.tileM.tile[tileNum1].stone == true) {
+			if(gp.tileManager.tiles[tileNum1].stone == true) {
 				entity.stone = true;
 			}
 			break;
 			
 		case "left":
 			entityLeftCol = (entityLeftWorldX - entity.speed)/gp.tileSize;
-			tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
-			tileNum2 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
-			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+			tileNum1 = gp.tileManager.mapTileNum[entityLeftCol][entityTopRow];
+			tileNum2 = gp.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
+			if(gp.tileManager.tiles[tileNum1].collision == true || gp.tileManager.tiles[tileNum2].collision == true) {
 				entity.collisionOn = true;
 			}
-			if(gp.tileM.tile[tileNum1].eat == true || gp.tileM.tile[tileNum2].eat == true) {
+			if(gp.tileManager.tiles[tileNum1].eat == true || gp.tileManager.tiles[tileNum2].eat == true) {
 				entity.eat = true;
 			}
-			if(gp.tileM.tile[tileNum1].item == true || gp.tileM.tile[tileNum2].item == true) {
+			if(gp.tileManager.tiles[tileNum1].item == true || gp.tileManager.tiles[tileNum2].item == true) {
 				entity.item = true;
 			}
-			if(gp.tileM.tile[tileNum1].stone == true) {
+			if(gp.tileManager.tiles[tileNum1].stone == true) {
 				entity.stone = true;
 			}
 			break;
 			
 		case "right":
 			entityRightCol = (entityRightWorldX + entity.speed)/gp.tileSize;
-			tileNum1 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
-			tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
-			if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
+			tileNum1 = gp.tileManager.mapTileNum[entityRightCol][entityTopRow];
+			tileNum2 = gp.tileManager.mapTileNum[entityRightCol][entityBottomRow];
+			if(gp.tileManager.tiles[tileNum1].collision == true || gp.tileManager.tiles[tileNum2].collision == true) {
 				entity.collisionOn = true;
 			}
-			if(gp.tileM.tile[tileNum1].eat == true || gp.tileM.tile[tileNum2].eat == true) {
+			if(gp.tileManager.tiles[tileNum1].eat == true || gp.tileManager.tiles[tileNum2].eat == true) {
 				entity.eat = true;
 			}
-			if(gp.tileM.tile[tileNum1].item == true || gp.tileM.tile[tileNum2].item == true) {
+			if(gp.tileManager.tiles[tileNum1].item == true || gp.tileManager.tiles[tileNum2].item == true) {
 				entity.item = true;
 			}
-			if(gp.tileM.tile[tileNum1].stone == true) {
+			if(gp.tileManager.tiles[tileNum1].stone == true) {
 				entity.stone = true;
 			}
 			break;

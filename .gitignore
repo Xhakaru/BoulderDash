@@ -1,6 +1,7 @@
 # IntelliJ Projektdateien
 .idea
 *.iml
+target
 
 # Eclipse Projektdateien
 .settings/

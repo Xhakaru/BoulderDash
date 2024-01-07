@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{
 
-	public boolean upPressed, downPressed, leftPressed, rightPressed, escPressed;
+	public boolean upPressed, downPressed, leftPressed, rightPressed, backspacePressed, escPressed, pageupPressed, pagedownPressed;
 	
 	public void keyTyped(KeyEvent e) {
 	}
@@ -26,8 +26,17 @@ public class KeyHandler implements KeyListener{
 		if(code == KeyEvent.VK_D) {
 			rightPressed = true;
 		}
+		if(code == KeyEvent.VK_BACK_SPACE) {
+			backspacePressed = true;
+		}
 		if(code == KeyEvent.VK_ESCAPE) {
 			escPressed = true;
+		}
+		if(code == KeyEvent.VK_PAGE_UP) {
+			pageupPressed = true;
+		}
+		if(code == KeyEvent.VK_PAGE_DOWN) {
+			pagedownPressed = true;
 		}
 		
 	}
@@ -48,8 +57,17 @@ public class KeyHandler implements KeyListener{
 		if(code == KeyEvent.VK_D) {
 			rightPressed = false;
 		}
+		if(code == KeyEvent.VK_BACK_SPACE) {
+			backspacePressed = false;
+		}
 		if(code == KeyEvent.VK_ESCAPE) {
 			escPressed = false;
+		}
+		if(code == KeyEvent.VK_PAGE_UP) {
+			pageupPressed = false;
+		}
+		if(code == KeyEvent.VK_PAGE_DOWN) {
+			pagedownPressed = false;
 		}
 		
 	}

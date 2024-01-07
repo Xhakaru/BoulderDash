@@ -7,38 +7,48 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import entity.EnemyNoLoot;
 import entity.Player;
 import tile.TileManager;
+import tile.Levelbord;
 
 public class GamePanel extends JPanel implements Runnable{
 
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
-	final int scale = 3;
+	final int scale = 4;
 	
 	public final int tileSize = originalTileSize * scale; // 48x48 tile
-	public final int maxScreenCol = 16;
-	public final int maxScreenRow = 12;
+	public final int maxScreenCol = 30;
+	public final int maxScreenRow = 17;
 	public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
 	public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 	
 	// WORLD SETTINGS
-	public final int maxWorldCol = 44;
-	public final int maxWorldRow = 24;
+	public final int maxWorldCol = 40;
+	public final int maxWorldRow = 23;
 	public final int worldWidth = tileSize * maxWorldCol;
 	public final int worldHeight = tileSize * maxWorldRow;
 	
 	// FPS
 	int FPS = 60;
 	
+	public int welt = 3;
+	
 	public TileManager tileM = new TileManager(this);
-	KeyHandler keyH = new KeyHandler();
-	Thread gameThread;
+	public KeyHandler keyH = new KeyHandler();
+	public Thread gameThread;
 	public Player player = new Player(this, keyH);
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	Sound sound = new Sound();
+	public Sound sound = new Sound();
 	public Interface ui = new Interface();
+	public Levelbord levelB = new Levelbord(this);
+	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
+	public Animation animation = new Animation(this);
 	
+	public int threadRunTime = 0;
+	public int time = 0;
+	public boolean animationPause = false;
 	
 	public GamePanel() {
 		
@@ -75,6 +85,8 @@ public class GamePanel extends JPanel implements Runnable{
 			if(delta >= 1) {
 				update();
 				repaint();
+				threadRunTime++;
+				time = Math.round(threadRunTime/60);
 				delta--;
 			}
 		}
@@ -83,8 +95,16 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void update() {
 		
-		player.update();
-		tileM.update();
+		if(!animationPause) {
+			setVolume();
+			player.update();
+			tileM.update();
+			levelB.update();
+			enemyNL.update();
+		}
+		else {
+			animation.update();
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -95,15 +115,26 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		tileM.draw(g2);
 		
-		player.draw(g2);
+		levelB.draw(g2);
+		
+		if(!animationPause) {
+			player.draw(g2);
+		}
+		
+		enemyNL.draw(g2);
 		
 		ui.draw(g2);
+		
+		if(animationPause) {
+			animation.draw(g2);
+		}
 		
 		g2.dispose();
 	}
 	
 	public void playMusic(int i) {
 		sound.setFile(i);
+		sound.setValue(-30.0f);
 		sound.play();
 		sound.loop();
 	}
@@ -112,6 +143,31 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	public void playSE(int i){
 		sound.setFile(i);
+		sound.setValue(-30.0f);
+		if(i == 5) {
+			sound.setValue(-50.0f);
+		}
 		sound.play();
+	}
+	
+	public void setVolume() {
+		if(keyH.pageupPressed == true) {
+			keyH.pageupPressed = false;
+			if(sound.volume < 30.0f) {
+				sound.volume += 5.0f;
+			}
+			else {
+				System.out.println("Maximale Lautstärke erreicht!");
+			}
+		}
+		if(keyH.pagedownPressed == true) {
+			keyH.pagedownPressed = false;
+			if(sound.volume > -30.0f) {
+				sound.volume -= 5.0f;
+			}
+			else {
+				System.out.println("Minimale Lautstärke erreicht!");
+			}
+		}
 	}
 }

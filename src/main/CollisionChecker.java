@@ -42,6 +42,9 @@ public class CollisionChecker {
 			if(gp.tileM.tile[tileNum1].stone == true) {
 				entity.stone = true;
 			}
+			if(gp.tileM.tile[tileNum1].finish == true || gp.tileM.tile[tileNum2].finish == true) {
+				entity.finish = true;
+			}
 			break;
 			
 		case "down":
@@ -59,6 +62,9 @@ public class CollisionChecker {
 			}
 			if(gp.tileM.tile[tileNum1].stone == true) {
 				entity.stone = true;
+			}
+			if(gp.tileM.tile[tileNum1].finish == true || gp.tileM.tile[tileNum2].finish == true) {
+				entity.finish = true;
 			}
 			break;
 			
@@ -78,6 +84,9 @@ public class CollisionChecker {
 			if(gp.tileM.tile[tileNum1].stone == true) {
 				entity.stone = true;
 			}
+			if(gp.tileM.tile[tileNum1].finish == true || gp.tileM.tile[tileNum2].finish == true) {
+				entity.finish = true;
+			}
 			break;
 			
 		case "right":
@@ -95,6 +104,9 @@ public class CollisionChecker {
 			}
 			if(gp.tileM.tile[tileNum1].stone == true) {
 				entity.stone = true;
+			}
+			if(gp.tileM.tile[tileNum1].finish == true || gp.tileM.tile[tileNum2].finish == true) {
+				entity.finish = true;
 			}
 			break;
 		

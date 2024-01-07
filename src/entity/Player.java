@@ -17,11 +17,16 @@ public class Player extends Entity{
 	GamePanel gp;
 	KeyHandler keyH;
 	
-	public final int screenX;
-	public final int screenY;
-	private int rubinCounter = 0;
-	int varX = 0;
-	int varY = 0;
+	public int screenX;
+	public int screenY;
+	public int rubinCounter;
+	public int leben = 3;
+	public int varX = 0;
+	public int varY = 0;
+	private int[] worldSpawnX = {8, 8, 3, 18};
+	private int[] worldSpawnY = {6, 6, 2, 19};
+	
+	private BufferedImage image = null;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
 		
@@ -34,21 +39,22 @@ public class Player extends Entity{
 		solidArea.width = 0;
 		solidArea.height = 0;
 		
-		screenX = gp.screenWidth/2 - (gp.tileSize/2);
-		screenY = gp.screenHeight/2 - (gp.tileSize/2);
 		
-		setDefaultValues();
+		setDefaultValues(gp.welt);
 		getPlayerImage();
 	}
 	
-	public void setDefaultValues() {
+	public void setDefaultValues(int welt) {
 		
-		worldX = gp.tileSize * 8;
-		worldY = gp.tileSize * 6;
+		screenX = gp.screenWidth/2;
+		screenY = gp.screenHeight/2;
+		worldX = gp.tileSize * worldSpawnX[welt-1];
+		worldY = gp.tileSize * worldSpawnY[welt-1];
 		speed = gp.tileSize;
 		direction = "down";
 		Xdirection = "right";
 		Ydirection = "down";
+		rubinCounter = 0;
 	}
 	
 	public void getPlayerImage() {
@@ -71,150 +77,7 @@ public class Player extends Entity{
 		
 	}
 	
-	public void update() {
-		
-		if(keyH.upPressed == true || 
-		   keyH.downPressed == true || 
-		   keyH.leftPressed == true || 
-		   keyH.rightPressed == true) {
-			
-			if(keyH.upPressed == true) {
-				keyH.upPressed = false;
-				direction = "up";
-				Ydirection = "up";
-			} else if(keyH.downPressed == true) {
-				keyH.downPressed = false;
-				direction = "down";
-				Ydirection = "down";
-			} else if(keyH.leftPressed == true) {
-				keyH.leftPressed = false;
-				direction = "left";
-				Xdirection = "left";
-			} else if(keyH.rightPressed == true) {
-				keyH.rightPressed = false;
-				direction = "right";
-				Xdirection = "right";
-			}
-			
-			collisionOn = false;
-			eat = false;
-			item = false;
-			stone = false;
-			gp.cChecker.checkTile(this);
-			
-			if(collisionOn == false) {
-				switch(direction) {
-				case "up":
-					keyH.upPressed = false;
-					worldY -= speed;
-		        	break;
-				case "down":
-					keyH.downPressed = false;
-					worldY += speed;
-			        break;
-				case "left":
-					keyH.leftPressed = false;
-					worldX -= speed;
-			        break;
-				case "right":
-					keyH.rightPressed = false;
-					worldX += speed;
-			        break;
-				}
-			}
-			
-			if(eat == true) {
-				gp.tileM.eaten(worldX, worldY);
-			}
-			
-			if(item == true) {
-				rubinCounter++;
-				System.out.println("Rubine gesammelt: " + rubinCounter);
-			}
-			
-			if(stone == true) {
-				switch(direction) {
-				case "up":
-					varX = 0;
-					varY = -48;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
-					System.out.println("upEaten");
-		        	break;
-				case "down":
-					varX = 0;
-					varY = 48;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
-					System.out.println("downEaten");
-			        break;
-				case "left":
-					varX = -48;
-					varY = 0;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
-					System.out.println("leftEaten");
-			        break;
-				case "right":
-					varX = 48;
-					varY = 0;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
-					System.out.println("rightEaten");
-			        break;
-				}
-			}
-			
-			spriteCounter++;
-			if(spriteCounter > 16) {
-				if(spriteNum == 1) {
-					spriteNum = 2;
-				}
-				else if(spriteNum == 2) {
-					spriteNum = 3;
-				}
-				else if(spriteNum == 3) {
-					spriteNum = 4;
-				}
-				else if(spriteNum == 4) {
-					spriteNum = 5;
-				}
-				else if(spriteNum == 5) {
-					spriteNum = 6;
-				}
-				else if(spriteNum == 6) {
-					spriteNum = 1;
-				}
-				spriteCounter = 0;
-			}
-		}
-		else
-		{
-			spriteCounter++;
-			if(spriteCounter > 16) {
-				if(spriteNum == 1) {
-					spriteNum = 2;
-				}
-				else if(spriteNum == 2) {
-					spriteNum = 3;
-				}
-				else if(spriteNum == 3) {
-					spriteNum = 4;
-				}
-				else if(spriteNum == 4) {
-					spriteNum = 5;
-				}
-				else if(spriteNum == 5) {
-					spriteNum = 6;
-				}
-				else if(spriteNum == 6) {
-					spriteNum = 1;
-				}
-				spriteCounter = 0;
-			}
-		}
-	}
-
-	public void draw(Graphics2D g2) {
-		
-		BufferedImage image = null;
-		
+	public void updatePlayerImage() {
 		switch(Ydirection) {
 		case "up":
 			switch(Xdirection) {
@@ -305,6 +168,231 @@ public class Player extends Entity{
 			}
 			break;
 		}
+	}
+
+	public void chunkUpdate() {
+		screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize;
+		screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize;
+	}
+	
+	public void sterben(String grund) {
+		leben -= 1;
+		if(grund == "Gegner") {
+			System.out.println("Der Gegner hat dich getötet.");
+		}
+		if(grund == "Stein Air") {
+			System.out.println("Ein Stein hat dich getötet.");
+		}
+		if(grund == "Stein Ground") {
+			System.out.println("Ein Stein hat dich zerschmettert.");
+		}
+		if(grund == "Zeit") {
+			System.out.println("Die Zeit ist abgelaufen.");
+		}
+		if(grund == "Retry") {
+			System.out.println("Du hast aufgegeben.");
+		}
+		System.out.println("Verbleibende Leben: " + leben);
+		
+		if(leben == 0) {
+			gp.welt = 3;
+			leben = 3;
+			System.out.println("Du bist mit deinen neuen Leben im ersten Level neu gespawnt.");
+		}
+		
+		switch(gp.welt) {
+			case(3):
+				gp.tileM.loadMap("/maps/world03.txt");
+				break;
+			case(4):
+				gp.tileM.loadMap("/maps/world04.txt");
+				break;
+		}
+		setDefaultValues(gp.welt);
+		gp.enemyNL.setDefaultValues();
+		gp.levelB.resetTime();
+	}
+	
+	public void update() {
+		
+		updatePlayerImage();
+		chunkUpdate();
+		
+		if(keyH.backspacePressed == true) {
+			keyH.backspacePressed = false;
+			sterben("Retry");
+		}
+		
+		if(keyH.upPressed == true || 
+		   keyH.downPressed == true || 
+		   keyH.leftPressed == true || 
+		   keyH.rightPressed == true) {
+			
+			if(keyH.upPressed == true) {
+				keyH.upPressed = false;
+				direction = "up";
+				Ydirection = "up";
+			} else if(keyH.downPressed == true) {
+				keyH.downPressed = false;
+				direction = "down";
+				Ydirection = "down";
+			} else if(keyH.leftPressed == true) {
+				keyH.leftPressed = false;
+				direction = "left";
+				Xdirection = "left";
+			} else if(keyH.rightPressed == true) {
+				keyH.rightPressed = false;
+				direction = "right";
+				Xdirection = "right";
+			}
+			
+			collisionOn = false;
+			eat = false;
+			item = false;
+			stone = false;
+			finish = false;
+			gp.cChecker.checkTile(this);
+			
+			if(stone == true) {
+				switch(direction) {
+				case "left":
+					varX = -gp.tileSize;
+					varY = 0;
+					gp.tileM.stonePush(worldX, worldY, varX, varY);
+					System.out.println("leftEaten");
+			        break;
+				case "right":
+					varX = gp.tileSize;
+					varY = 0;
+					gp.tileM.stonePush(worldX, worldY, varX, varY);
+					System.out.println("rightEaten");
+			        break;
+				}
+			}
+			
+			if(collisionOn == false) {
+				switch(direction) {
+				case "up":
+					keyH.upPressed = false;
+					worldY -= speed;
+					screenY -= speed;
+		        	break;
+				case "down":
+					keyH.downPressed = false;
+					worldY += speed;
+					screenY += speed;
+			        break;
+				case "left":
+					keyH.leftPressed = false;
+					worldX -= speed;
+					screenX -= speed;
+			        break;
+				case "right":
+					keyH.rightPressed = false;
+					worldX += speed;
+					screenX += speed;
+			        break;
+				}
+			}
+			else if(collisionOn == true && stone == true && gp.tileM.stoneCollision == false) {
+				switch(direction) {
+				case "left":
+					keyH.leftPressed = false;
+					worldX -= speed;
+					screenX -= speed;
+					break;
+				case "right":
+					keyH.rightPressed = false;
+					worldX += speed;
+					screenX += speed;
+					break;
+				}
+			}
+			
+			if(eat == true) {
+				gp.tileM.eaten(worldX, worldY);
+			}
+			
+			if(item == true) {
+				rubinCounter++;
+				System.out.println("Rubine gesammelt: " + rubinCounter);
+			}
+			
+			if(finish == true) {
+				System.out.println("Level geschafft! Let's go ins Nächste.");
+				if(gp.welt != 4) {
+					gp.welt += 1;
+				}
+				else {
+					System.out.println("Level geschafft! Du hast das Spiel durchgespielt.");
+					gp.animation.startEndanimation();
+				}
+				switch(gp.welt) {
+					case(3):
+						gp.tileM.loadMap("/maps/world03.txt");
+						break;
+					case(4):
+						gp.tileM.loadMap("/maps/world04.txt");
+						break;
+				}
+				setDefaultValues(gp.welt);
+				gp.enemyNL.setDefaultValues();
+				gp.levelB.resetTime();
+			}
+			
+			spriteCounter++;
+			if(spriteCounter > 16) {
+				if(spriteNum == 1) {
+					spriteNum = 2;
+				}
+				else if(spriteNum == 2) {
+					spriteNum = 3;
+				}
+				else if(spriteNum == 3) {
+					spriteNum = 4;
+				}
+				else if(spriteNum == 4) {
+					spriteNum = 5;
+				}
+				else if(spriteNum == 5) {
+					spriteNum = 6;
+				}
+				else if(spriteNum == 6) {
+					spriteNum = 1;
+				}
+				spriteCounter = 0;
+			}
+		}
+		else
+		{
+			spriteCounter++;
+			if(spriteCounter > 16) {
+				if(spriteNum == 1) {
+					spriteNum = 2;
+				}
+				else if(spriteNum == 2) {
+					spriteNum = 3;
+				}
+				else if(spriteNum == 3) {
+					spriteNum = 4;
+				}
+				else if(spriteNum == 4) {
+					spriteNum = 5;
+				}
+				else if(spriteNum == 5) {
+					spriteNum = 6;
+				}
+				else if(spriteNum == 6) {
+					spriteNum = 1;
+				}
+				spriteCounter = 0;
+			}
+		}
+	}
+
+	public void draw(Graphics2D g2) {
+		
+		
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		
 	}

@@ -8,4 +8,5 @@ public class Tile {
 	public boolean eat = false;
 	public boolean item = false;
 	public boolean stone = false;
+	public boolean finish = false;
 }

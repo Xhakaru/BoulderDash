@@ -9,6 +9,7 @@ public class Entity {
 	public int speed;
 	
 	public BufferedImage player_gray_u1, player_gray_u2, player_gray_o1, player_gray_o2, player_gray_r1, player_gray_r2, player_gray_l1, player_gray_l2;
+	public BufferedImage enemy_gray_f1, enemy_gray_f2;
 	public String direction;
 	public String Xdirection;
 	public String Ydirection;
@@ -21,4 +22,5 @@ public class Entity {
 	public boolean eat;
 	public boolean item;
 	public boolean stone;
+	public boolean finish;
 }

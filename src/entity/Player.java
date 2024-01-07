@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
+import main.SoundHandler;
 import tile.TileManager;
 
 public class Player extends Entity{
@@ -176,6 +178,7 @@ public class Player extends Entity{
 	}
 	
 	public void sterben(String grund) {
+		//SoundHandler.getSound("win-nt").play();
 		leben -= 1;
 		if(grund == "Gegner") {
 			System.out.println("Der Gegner hat dich getötet.");
@@ -316,6 +319,7 @@ public class Player extends Entity{
 			if(item == true) {
 				rubinCounter++;
 				System.out.println("Rubine gesammelt: " + rubinCounter);
+				SoundHandler.getSound("eat").play();
 			}
 			
 			if(finish == true) {
@@ -325,6 +329,10 @@ public class Player extends Entity{
 				}
 				else {
 					System.out.println("Level geschafft! Du hast das Spiel durchgespielt.");
+					Sound endSound = SoundHandler.getSound("nyan-cat");
+					endSound.setVolume(.5f);
+					endSound.play();
+					gp.stopMusic("blue-boy-adventure");
 					gp.animation.startEndanimation();
 				}
 				switch(gp.welt) {

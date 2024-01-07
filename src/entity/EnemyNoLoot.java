@@ -189,8 +189,8 @@ public class EnemyNoLoot extends Entity{
 	public void draw(Graphics2D g2) {
 		if(worldSpawnX[gp.welt - 1] != 9999) {
 			
-			screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize;
-			screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize;
+			screenX = worldX + gp.camera.worldX;
+			screenY = worldY + gp.camera.worldY;
 			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			

@@ -47,9 +47,6 @@ public class Player extends Entity{
 	}
 	
 	public void setDefaultValues(int welt) {
-		
-		screenX = gp.screenWidth/2;
-		screenY = gp.screenHeight/2;
 		worldX = gp.tileSize * worldSpawnX[welt-1];
 		worldY = gp.tileSize * worldSpawnY[welt-1];
 		speed = gp.tileSize;
@@ -171,11 +168,6 @@ public class Player extends Entity{
 			break;
 		}
 	}
-
-	public void chunkUpdate() {
-		screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize;
-		screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize;
-	}
 	
 	public void sterben(String grund) {
 		//SoundHandler.getSound("win-nt").play();
@@ -219,7 +211,6 @@ public class Player extends Entity{
 	public void update() {
 		
 		updatePlayerImage();
-		chunkUpdate();
 		
 		if(keyH.backspacePressed == true) {
 			keyH.backspacePressed = false;
@@ -278,22 +269,18 @@ public class Player extends Entity{
 				case "up":
 					keyH.upPressed = false;
 					worldY -= speed;
-					screenY -= speed;
 		        	break;
 				case "down":
 					keyH.downPressed = false;
 					worldY += speed;
-					screenY += speed;
 			        break;
 				case "left":
 					keyH.leftPressed = false;
 					worldX -= speed;
-					screenX -= speed;
 			        break;
 				case "right":
 					keyH.rightPressed = false;
 					worldX += speed;
-					screenX += speed;
 			        break;
 				}
 			}
@@ -302,12 +289,10 @@ public class Player extends Entity{
 				case "left":
 					keyH.leftPressed = false;
 					worldX -= speed;
-					screenX -= speed;
 					break;
 				case "right":
 					keyH.rightPressed = false;
 					worldX += speed;
-					screenX += speed;
 					break;
 				}
 			}
@@ -399,8 +384,9 @@ public class Player extends Entity{
 	}
 
 	public void draw(Graphics2D g2) {
-		
-		
+		screenX = worldX - gp.tileSize + gp.camera.worldX;
+		screenY = worldY + gp.camera.worldY;
+
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		
 	}

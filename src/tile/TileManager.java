@@ -10,17 +10,13 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.SoundHandler;
 
 public class TileManager {
 	
 	GamePanel gp;
 	public Tile[] tile;
 	public int mapTileNum[][];
-	
-	public Chunk chunks[][];
-	public int playerInChunk;
-	public int screenInWorldCol, screenInWorldRow;
-	public int anzahlScreens;
 	public int playerChunkX, playerChunkY, playerChunkXlast, playerChunkYlast;
 	
 	public boolean stoneCollision = false;
@@ -53,8 +49,6 @@ public class TileManager {
 				loadMap("/maps/world04.txt");
 				break;
 		}
-		
-		chunkBorders();
 	}
 	
 	public void setFallingColFalse() {
@@ -152,74 +146,6 @@ public class TileManager {
 //		gp.playSE(6);   					//Herr Wedel, Sie können das auch entkommentieren, aber auf eigene Gefahr
 	}
 	
-	public void chunkBorders() {
-		
-		//Wie oft passt der Screen in der X-Achse rein (um alles zu bedecken)
-		screenInWorldCol = 0;
-		int displayedTilesX = gp.maxScreenCol;
-		int worldColVariable = gp.maxWorldCol;
-		while(worldColVariable - displayedTilesX > 0) {
-			screenInWorldCol++;
-			worldColVariable = worldColVariable - displayedTilesX;
-		}
-		screenInWorldCol++;
-		//Wie oft passt der Screen in der Y-Achse rein (um alles zu bedecken)
-		screenInWorldRow = 0;
-		int displayedTilesY = gp.maxScreenRow;
-		int worldRowVariable = gp.maxWorldRow;
-		while(worldRowVariable - displayedTilesY > 0) {
-			screenInWorldRow++;
-			worldRowVariable = worldRowVariable - displayedTilesY;
-		}
-		screenInWorldRow++;
-		anzahlScreens = screenInWorldCol * screenInWorldRow;
-		
-		int widthPerChunk = Math.round(gp.maxWorldCol / screenInWorldCol);
-		int hightPerChunk = Math.round(gp.maxWorldRow / screenInWorldRow);
-		
-		chunks = new Chunk[screenInWorldRow][screenInWorldCol];
-		int TPchunky = 0;
-		for(int i = 0; i < screenInWorldRow; i++) {
-			int TPchunkx = 0;
-			for(int j = 0; j < screenInWorldCol; j++) {
-				chunks[i][j] = new Chunk(gp, TPchunkx, TPchunkx + widthPerChunk, TPchunky, TPchunky + hightPerChunk);
-				TPchunkx = TPchunkx + widthPerChunk;
-			}
-			TPchunky = TPchunky + hightPerChunk;
-		}
-		
-	}
-	
-	public void inChunk() {
-		playerChunkXlast = playerChunkX;
-		playerChunkYlast = playerChunkY;
-		//Player in Chunk?
-		playerInChunk = 0;
-		playerChunkX = 0;
-		for(int j = 0; j < screenInWorldCol; j++) {
-			Chunk tp = chunks[0][j];
-			if(tp.cbLeft * gp.tileSize < gp.player.worldX && tp.cbRight * gp.tileSize >= gp.player.worldX) {
-				playerChunkX = j;
-				j = screenInWorldCol;
-			}
-		}
-		
-		playerChunkY = 0;
-		for(int i = 0; i < screenInWorldRow; i++) {
-			Chunk tp = chunks[i][playerChunkX];
-			if(tp.cbUp * gp.tileSize < gp.player.worldY && tp.cbDown * gp.tileSize >= gp.player.worldY) {
-				playerChunkY = i;
-				i = screenInWorldRow;
-			}
-		}
-		
-		playerInChunk = playerChunkY * screenInWorldCol + playerChunkX + 1;
-		
-		if(playerChunkXlast != playerChunkX || playerChunkYlast != playerChunkY) {
-			
-		}
-	}
-	
 	public void stonePush(int worldX, int worldY, int varX, int varY) {
 		int x = worldX + varX;
 		int y = worldY + varY;
@@ -288,7 +214,7 @@ public class TileManager {
 			if(mapTileNum[col][row + 1] == 5 && !skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col][row + 1] = 4;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 				fallingCol[col] = true;
 				if(mapTileNum[col][row + 2] != 5) {
 					fallingCol[col] = false;
@@ -302,7 +228,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col - 1][row] = 4;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 4 && 
 					mapTileNum[col + 1][row] == 5 && 
@@ -312,7 +238,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col + 1][row] = 4;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 1 && 
 					mapTileNum[col - 1][row] == 5 && 
@@ -322,7 +248,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col - 1][row] = 4;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 1 && 
 					mapTileNum[col + 1][row] == 5 && 
@@ -332,7 +258,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col + 1][row] = 4;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 		}
 	}
@@ -362,7 +288,7 @@ public class TileManager {
 			if(mapTileNum[col][row + 1] == 5 && !skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col][row + 1] = 1;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 				fallingCol[col] = true;
 				if(mapTileNum[col][row + 2] != 5) {
 					fallingCol[col] = false;
@@ -376,7 +302,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col - 1][row] = 1;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 1 && 
 					mapTileNum[col + 1][row] == 5 && 
@@ -386,7 +312,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col + 1][row] = 1;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 4 && 
 					mapTileNum[col - 1][row] == 5 && 
@@ -396,7 +322,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col - 1][row] = 1;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			else if(mapTileNum[col][row + 1] == 4 && 
 					mapTileNum[col + 1][row] == 5 && 
@@ -406,7 +332,7 @@ public class TileManager {
 					!skip) {
 				mapTileNum[col][row] = 5;
 				mapTileNum[col + 1][row] = 1;
-//				gp.playSE(5);
+//				gp.playSE("win-nt-startup");
 			}
 			if(mapTileNum[col][row] == 1) {															//guckt ob der Spieler im Weg ist
 				if(col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize) {
@@ -530,8 +456,6 @@ public class TileManager {
 		
 		spawnFinish();
 		
-		inChunk();
-		
 		rubinSprite();
 		finishSprite();
 		
@@ -615,8 +539,8 @@ public class TileManager {
 			
 			int worldX = worldCol * gp.tileSize;
 			int worldY = worldRow * gp.tileSize;
-			int screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize;
-			int screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize;
+			int screenX = worldX - gp.tileSize + gp.camera.worldX;
+			int screenY = worldY - gp.tileSize + gp.camera.worldY;
 			
 			g2.drawImage(tile[tileNum].image, screenX, screenY + gp.tileSize, gp.tileSize, gp.tileSize, null);
 			

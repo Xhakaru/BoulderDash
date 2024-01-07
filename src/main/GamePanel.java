@@ -15,6 +15,7 @@ import tile.TileManager;
 import tile.Levelbord;
 
 public class GamePanel extends JPanel implements Runnable{
+	public static final boolean cameraDebug = true;
 
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
@@ -38,6 +39,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public int welt = 3;
 	
 	public TileManager tileM = new TileManager(this);
+	public Camera camera = new Camera(this);
 	public KeyHandler keyH = new KeyHandler();
 	public Thread gameThread;
 	public Player player = new Player(this, keyH);
@@ -97,7 +99,6 @@ public class GamePanel extends JPanel implements Runnable{
 	public void update() {
 		
 		if(!animationPause) {
-			setVolume();
 			player.update();
 			tileM.update();
 			levelB.update();
@@ -106,6 +107,8 @@ public class GamePanel extends JPanel implements Runnable{
 		else {
 			animation.update();
 		}
+		setVolume();
+		camera.update();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -128,6 +131,10 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		if(animationPause) {
 			animation.draw(g2);
+		}
+
+		if(cameraDebug){
+			camera.drawCameraBox(g2);
 		}
 		
 		g2.dispose();

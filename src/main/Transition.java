@@ -14,7 +14,6 @@ public class Transition {
     public static Function LINEAR = t -> t;
     public static Function EXPONENTIAL = t -> t*t;
     public static Function SINUS = t -> (float) Math.sin(Math.toRadians(t*90));
-    public static Function SINUS_SINUS = t -> SINUS.compute(t) * SINUS.compute(t);
 
     public Transition(Duration duration, Function function, int resolution, UpdatableValue updatableValue) {
         this.updatableValue = updatableValue;

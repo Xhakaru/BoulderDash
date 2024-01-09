@@ -6,16 +6,19 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 import javax.swing.JPanel;
 
-import entity.EnemyNoLoot;
 import entity.Player;
 import tile.TileManager;
 import tile.Levelbord;
 
 public class GamePanel extends JPanel implements Runnable{
-	public static final boolean cameraDebug = true;
+	private Stack<Runnable> nextFrameSchedule = new Stack<>();
+	public static final boolean cameraDebug = false;
 
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
@@ -28,38 +31,63 @@ public class GamePanel extends JPanel implements Runnable{
 	public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 	
 	// WORLD SETTINGS
-	public final int maxWorldCol = 40;
-	public final int maxWorldRow = 23;
-	public final int worldWidth = tileSize * maxWorldCol;
-	public final int worldHeight = tileSize * maxWorldRow;
+	public List<Map> maps = new ArrayList<>();
+	public Map currentMap;
+
+	private static final int STARTING_MAP_ID = 0;
 	
 	// FPS
 	int FPS = 60;
 	
-	public int welt = 3;
-	
-	public TileManager tileM = new TileManager(this);
-	public Camera camera = new Camera(this);
+	public TileManager tileM;
+	public Camera camera;
 	public KeyHandler keyH = new KeyHandler();
 	public Thread gameThread;
-	public Player player = new Player(this, keyH);
-	public CollisionChecker cChecker = new CollisionChecker(this);
-	public Interface ui = new Interface();
-	public Levelbord levelB = new Levelbord(this);
-	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
-	public Animation animation = new Animation(this);
+	public Player player;
+	public CollisionChecker cChecker;
+	public Interface ui;
+	public Levelbord levelB;
+	public Animation animation;
 	
 	public int threadRunTime = 0;
 	public int time = 0;
 	public boolean animationPause = false;
 	
 	public GamePanel() {
+		loadMaps();
+
+		init();
 		
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+	}
+
+	private void loadMaps() {
+		maps.add(new Map(this, "/maps/map01.map"));
+		maps.add(new Map(this, "/maps/map02.map"));
+		maps.add(new Map(this, "/maps/map03.map"));
+		maps.add(new Map(this, "/maps/map04.map"));
+
+		for(Map map : maps){
+			map.preload();
+		}
+
+		currentMap = maps.get(STARTING_MAP_ID);
+	}
+
+	private void init() {
+		tileM = new TileManager(this);
+		camera = new Camera(this);
+		player = new Player(this, keyH);
+		cChecker = new CollisionChecker(this);
+		ui = new Interface();
+		levelB = new Levelbord(this);
+		animation = new Animation(this);
+
+		camera.centerPlayer();
 	}
 	
 	public void startGameThread() {
@@ -102,7 +130,6 @@ public class GamePanel extends JPanel implements Runnable{
 			player.update();
 			tileM.update();
 			levelB.update();
-			enemyNL.update();
 		}
 		else {
 			animation.update();
@@ -112,21 +139,20 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void paintComponent(Graphics g) {
-		
+		if(!nextFrameSchedule.empty()) nextFrameSchedule.pop().run();
+
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g;
 		
 		tileM.draw(g2);
-		
-		levelB.draw(g2);
-		
+
 		if(!animationPause) {
 			player.draw(g2);
 		}
-		
-		enemyNL.draw(g2);
-		
+
+		levelB.draw(g2);
+
 		ui.draw(g2);
 		
 		if(animationPause) {
@@ -136,7 +162,7 @@ public class GamePanel extends JPanel implements Runnable{
 		if(cameraDebug){
 			camera.drawCameraBox(g2);
 		}
-		
+
 		g2.dispose();
 	}
 	
@@ -179,5 +205,13 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 		SoundHandler.updateVolume();
+	}
+
+	public void resetMap() {
+		currentMap.resetMap();
+	}
+
+	public void scheduleForNextFrame(Runnable runnable) {
+		nextFrameSchedule.add(runnable);
 	}
 }

@@ -9,4 +9,6 @@ public class Tile {
 	public boolean item = false;
 	public boolean stone = false;
 	public boolean finish = false;
+	public boolean finishSpawnPoint = false;
+	public boolean playerSpawnPoint = false;
 }

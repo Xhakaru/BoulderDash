@@ -1,12 +1,12 @@
 package entity;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import main.GamePanel;
+import main.Point2D;
 
 import javax.imageio.ImageIO;
-
-import main.GamePanel;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class EnemyNoLoot extends Entity{
 	
@@ -14,30 +14,28 @@ public class EnemyNoLoot extends Entity{
 	
 	public int screenX;
 	public int screenY;
-	private int[] worldSpawnX = {9999, 9999, 9999, 4};
-	private int[] worldSpawnY = {9999, 9999, 9999, 14};
-	
+
 	private BufferedImage image = null;
-	
+
 	private int updateCounter = 0;
-	
-	public EnemyNoLoot(GamePanel gp) {
+
+	public EnemyNoLoot(GamePanel gp, Point2D spawnPoint) {
 		this.gp = gp;
-		
-		setDefaultValues();
+
+		setDefaultValues(spawnPoint);
 		getEnemyImage();
 	}
-	
-	public void setDefaultValues(){
-		worldX = worldSpawnX[gp.welt - 1] * gp.tileSize;
-		worldY = worldSpawnY[gp.welt - 1] * gp.tileSize;
+
+	public void setDefaultValues(Point2D spawnPoint) {
+		worldX = spawnPoint.getX() * gp.tileSize;
+		worldY = spawnPoint.getY() * gp.tileSize;
 		direction = "up";
 	}
-	
+
 	public void getEnemyImage() {
-		
+
 		try {
-			
+
 			enemy_gray_f1 = ImageIO.read(getClass().getResource("/enemy/enemy_f1.png"));
 			enemy_gray_f2 = ImageIO.read(getClass().getResource("/enemy/enemy_f2.png"));
 			
@@ -69,53 +67,45 @@ public class EnemyNoLoot extends Entity{
 		
 		switch(direction) {
 			case("up"):
-				if(gp.tileM.mapTileNum[worldX/gp.tileSize + 1][worldY/gp.tileSize] == 5) {
+				if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize + 1][worldY / gp.tileSize] == 5) {
 					direction = "right";
 					worldX += gp.tileSize;
-				}
-				else if(gp.tileM.mapTileNum[worldX/gp.tileSize][worldY/gp.tileSize - 1] != 5) {
+				} else if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize][worldY / gp.tileSize - 1] != 5) {
 					direction = "left";
-				}
-				else {
+				} else {
 					worldY -= gp.tileSize;
 				}
 				break;
 			
 			case("left"):
-				if(gp.tileM.mapTileNum[worldX/gp.tileSize][worldY/gp.tileSize - 1] == 5) {
+				if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize][worldY / gp.tileSize - 1] == 5) {
 					direction = "up";
 					worldY -= gp.tileSize;
-				}
-				else if(gp.tileM.mapTileNum[worldX/gp.tileSize - 1][worldY/gp.tileSize] != 5) {
+				} else if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize - 1][worldY / gp.tileSize] != 5) {
 					direction = "down";
-				}
-				else {
+				} else {
 					worldX -= gp.tileSize;
 				}
 				break;
 			
 			case("down"):
-				if(gp.tileM.mapTileNum[worldX/gp.tileSize - 1][worldY/gp.tileSize] == 5) {
+				if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize - 1][worldY / gp.tileSize] == 5) {
 					direction = "left";
 					worldX -= gp.tileSize;
-				}
-				else if(gp.tileM.mapTileNum[worldX/gp.tileSize][worldY/gp.tileSize + 1] != 5) {
+				} else if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize][worldY / gp.tileSize + 1] != 5) {
 					direction = "right";
-				}
-				else {
+				} else {
 					worldY += gp.tileSize;
 				}
 				break;
 			
 			case("right"):
-				if(gp.tileM.mapTileNum[worldX/gp.tileSize][worldY/gp.tileSize + 1] == 5) {
+				if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize][worldY / gp.tileSize + 1] == 5) {
 					direction = "down";
 					worldY += gp.tileSize;
-				}
-				else if(gp.tileM.mapTileNum[worldX/gp.tileSize + 1][worldY/gp.tileSize] != 5) {
+				} else if (gp.currentMap.getCurrentLevel().getTileIds()[worldX / gp.tileSize + 1][worldY / gp.tileSize] != 5) {
 					direction = "up";
-				}
-				else {
+				} else {
 					worldX += gp.tileSize;
 				}
 				break;
@@ -145,55 +135,48 @@ public class EnemyNoLoot extends Entity{
 	}
 	
 	public void update() {
-		if(worldSpawnX[gp.welt - 1] != 9999) {
-			
-			if(checkPlayer()) {
-				gp.player.sterben("Gegner");
+		if(checkPlayer()) {
+			gp.player.sterben("Gegner");
+		}
+
+		enemySprite();
+
+		//Gegner updatet sich nur alle 11 Frames
+		updateCounter++;
+		if(updateCounter > 10) {
+			enemyMovement();
+			updateCounter = 0;
+		}
+
+		//könnte zu problemen kommen, weil sprites über Entity läuft, funktioniert aber
+		spriteCounter++;
+		if(spriteCounter > 8) {
+			if(spriteNum == 1) {
+				spriteNum = 2;
 			}
-			
-			enemySprite();
-			
-			//Gegner updatet sich nur alle 11 Frames
-			updateCounter++;
-			if(updateCounter > 10) {
-				enemyMovement();
-				updateCounter = 0;
+			else if(spriteNum == 2) {
+				spriteNum = 3;
 			}
-			
-			//könnte zu problemen kommen, weil sprites über Entity läuft, funktioniert aber
-			spriteCounter++;
-			if(spriteCounter > 8) {
-				if(spriteNum == 1) {
-					spriteNum = 2;
-				}
-				else if(spriteNum == 2) {
-					spriteNum = 3;
-				}
-				else if(spriteNum == 3) {
-					spriteNum = 4;
-				}
-				else if(spriteNum == 4) {
-					spriteNum = 5;
-				}
-				else if(spriteNum == 5) {
-					spriteNum = 6;
-				}
-				else if(spriteNum == 6) {
-					spriteNum = 1;
-				}
-				spriteCounter = 0;
+			else if(spriteNum == 3) {
+				spriteNum = 4;
 			}
+			else if(spriteNum == 4) {
+				spriteNum = 5;
+			}
+			else if(spriteNum == 5) {
+				spriteNum = 6;
+			}
+			else if(spriteNum == 6) {
+				spriteNum = 1;
+			}
+			spriteCounter = 0;
 		}
 	}
 	
 	public void draw(Graphics2D g2) {
-		if(worldSpawnX[gp.welt - 1] != 9999) {
-			
-			screenX = worldX + gp.camera.worldX  - gp.tileSize;
-			screenY = worldY + gp.camera.worldY;
-			
-			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-			
-		}
+		screenX = worldX + gp.camera.worldX  - gp.tileSize;
+		screenY = worldY + gp.camera.worldY;
+
+		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 	}
 }

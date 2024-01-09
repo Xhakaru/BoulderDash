@@ -2,6 +2,7 @@ package main;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.Map;
 
 public class SoundHandler {
     private static final Map<String, Sound> sounds = new HashMap<>();

@@ -102,12 +102,7 @@ public class Levelbord {
 	
 	public void resetTime() {
 		setDefaultTileBord();
-		if(gp.welt == 3) {
-			worldTimeSubtractor = gp.time;
-		}
-		if(gp.welt == 4) {
-			worldTimeSubtractor = gp.time;
-		}
+		worldTimeSubtractor = gp.time;
 	}
 	
 	public void updateTileBordRubinCounter() {

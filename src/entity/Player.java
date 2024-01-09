@@ -1,63 +1,59 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import main.*;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
+public class Player extends Entity {
 
-import main.GamePanel;
-import main.KeyHandler;
-import main.Sound;
-import main.SoundHandler;
-import tile.TileManager;
+	private Point2D spawnPoint;
 
-public class Player extends Entity{
-	
 	GamePanel gp;
 	KeyHandler keyH;
-	
+
 	public int screenX;
 	public int screenY;
 	public int rubinCounter;
 	public int leben = 3;
 	public int varX = 0;
 	public int varY = 0;
-	private int[] worldSpawnX = {8, 8, 3, 18};
-	private int[] worldSpawnY = {6, 6, 2, 19};
 	
 	private BufferedImage image = null;
 	
 	public Player(GamePanel gp, KeyHandler keyH) {
-		
+
 		this.gp = gp;
 		this.keyH = keyH;
-		
+
 		solidArea = new Rectangle();
 		solidArea.x = 0;
 		solidArea.y = 0;
 		solidArea.width = 0;
 		solidArea.height = 0;
-		
-		
-		setDefaultValues(gp.welt);
+
+		setDefaultValues();
 		getPlayerImage();
 	}
-	
-	public void setDefaultValues(int welt) {
-		worldX = gp.tileSize * worldSpawnX[welt-1];
-		worldY = gp.tileSize * worldSpawnY[welt-1];
+
+	public void setDefaultValues() {
+		spawnPoint = gp.currentMap.getCurrentLevel().getLevelSpawn();
+
+		worldX = spawnPoint.getX() * gp.tileSize;
+		worldY = spawnPoint.getY() * gp.tileSize;
+		varX = spawnPoint.getX() * gp.tileSize;
+		varY = spawnPoint.getY() * gp.tileSize;
 		speed = gp.tileSize;
 		direction = "down";
 		Xdirection = "right";
 		Ydirection = "down";
 		rubinCounter = 0;
 	}
-	
+
 	public void getPlayerImage() {
-		
+
 		try {
 			
 			player_gray_u1 = ImageIO.read(getClass().getResource("/player_gray/player_gray_u1.png"));
@@ -184,27 +180,20 @@ public class Player extends Entity{
 		if(grund == "Zeit") {
 			System.out.println("Die Zeit ist abgelaufen.");
 		}
-		if(grund == "Retry") {
+		if (grund == "Retry") {
 			System.out.println("Du hast aufgegeben.");
 		}
 		System.out.println("Verbleibende Leben: " + leben);
-		
-		if(leben == 0) {
-			gp.welt = 3;
+
+		if (leben == 0) {
+			gp.resetMap();
 			leben = 3;
 			System.out.println("Du bist mit deinen neuen Leben im ersten Level neu gespawnt.");
 		}
-		
-		switch(gp.welt) {
-			case(3):
-				gp.tileM.loadMap("/maps/world03.txt");
-				break;
-			case(4):
-				gp.tileM.loadMap("/maps/world04.txt");
-				break;
-		}
-		setDefaultValues(gp.welt);
-		gp.enemyNL.setDefaultValues();
+
+
+		setDefaultValues();
+		gp.currentMap.getCurrentLevel().reset();
 		gp.levelB.resetTime();
 	}
 	
@@ -309,10 +298,7 @@ public class Player extends Entity{
 			
 			if(finish == true) {
 				System.out.println("Level geschafft! Let's go ins Nächste.");
-				if(gp.welt != 4) {
-					gp.welt += 1;
-				}
-				else {
+				if (!gp.currentMap.nextLevel()) {
 					System.out.println("Level geschafft! Du hast das Spiel durchgespielt.");
 					Sound endSound = SoundHandler.getSound("nyan-cat");
 					endSound.setVolume(.5f);
@@ -320,16 +306,11 @@ public class Player extends Entity{
 					gp.stopMusic("blue-boy-adventure");
 					gp.animation.startEndanimation();
 				}
-				switch(gp.welt) {
-					case(3):
-						gp.tileM.loadMap("/maps/world03.txt");
-						break;
-					case(4):
-						gp.tileM.loadMap("/maps/world04.txt");
-						break;
-				}
-				setDefaultValues(gp.welt);
-				gp.enemyNL.setDefaultValues();
+
+				gp.scheduleForNextFrame(() -> {
+					gp.camera.centerPlayer();
+				});
+				setDefaultValues();
 				gp.levelB.resetTime();
 			}
 			
@@ -371,11 +352,9 @@ public class Player extends Entity{
 				}
 				else if(spriteNum == 4) {
 					spriteNum = 5;
-				}
-				else if(spriteNum == 5) {
+				} else if (spriteNum == 5) {
 					spriteNum = 6;
-				}
-				else if(spriteNum == 6) {
+				} else if (spriteNum == 6) {
 					spriteNum = 1;
 				}
 				spriteCounter = 0;
@@ -383,11 +362,16 @@ public class Player extends Entity{
 		}
 	}
 
+	private void toSpawn() {
+		varX = spawnPoint.getX() * gp.tileSize;
+		varY = spawnPoint.getY() * gp.tileSize;
+	}
+
 	public void draw(Graphics2D g2) {
 		screenX = worldX - gp.tileSize + gp.camera.worldX;
 		screenY = worldY + gp.camera.worldY;
 
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-		
+
 	}
 }

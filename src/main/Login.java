@@ -21,7 +21,6 @@ public class Login {
 	private final int loginState = 1;
 	
 	//Title Screen Variables
-	private final String title = "Boulder Dash";
 	private BufferedImage logo;
 	
 	//Login Screen Variables
@@ -32,8 +31,8 @@ public class Login {
 	private boolean loginAllowed;
 	
 	//Login
-	private String user = "admin";
-	private String password = "1234";
+	private String user;
+	private String password;
 	
 	public Login(GamePanel gp) {
 		this.gp = gp;

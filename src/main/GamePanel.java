@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 import javax.swing.JPanel;
 
@@ -19,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable{
 
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
-	final int scale = 4;
+	final int scale = 3;
 	
 	public final int tileSize = originalTileSize * scale; // 48x48 tile
 	public final int maxScreenCol = 30;
@@ -55,7 +57,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public Thread gameThread;
 	public Player player = new Player(this, keyH);
 	public CollisionChecker cChecker = new CollisionChecker(this);
-	public Sound sound = new Sound();
+//	public Sound sound = new Sound();
 	public Interface ui = new Interface(this);
 	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
 	public Animation animation = new Animation(this);
@@ -77,12 +79,12 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		gameThread = new Thread(this);
 		gameThread.start();
-		playSE(0);
-		playMusic(2);
 		
 		//setDefault GameState
 		gameState = titleState;
 		
+		playSE("startup");
+		playMusic("blue-boy-adventure");
 	}
 
 	
@@ -103,10 +105,12 @@ public class GamePanel extends JPanel implements Runnable{
 			if(delta >= 1) {
 				update();
 				repaint();
+				
 				if(animationPause == false) {
 					threadRunTime++;
 				}
-				time = Math.round(threadRunTime/60);
+				time = Math.round(threadRunTime/FPS);
+				
 				delta--;
 			}
 		}
@@ -178,20 +182,21 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.dispose();
 	}
 	
-	public void playMusic(int i) {
-		sound.setFile(i);
-		sound.setValue(-30.0f);
-		sound.play();
+	public void playMusic(String name) {
+		Sound sound = SoundHandler.getSound(name);
+		sound.setVolume(0.5f);
 		sound.loop();
+		SoundHandler.playSoundDelayed(sound, Duration.of(5, ChronoUnit.SECONDS));
 	}
-	public void stopMusic() {
+	public void stopMusic(String name) {
+		Sound sound = SoundHandler.getSound(name);
 		sound.stop();
 	}
-	public void playSE(int i){
-		sound.setFile(i);
-		sound.setValue(-30.0f);
-		if(i == 5) {
-			sound.setValue(-50.0f);
+	public void playSE(String name){
+		Sound sound = SoundHandler.getSound(name);
+		sound.setVolume(0.5f);
+		if(name.equals("win-nt-shutdown")) {
+			sound.setVolume(0.3f);
 		}
 		sound.play();
 	}
@@ -199,8 +204,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public void setVolume() {
 		if(keyH.pageupPressed == true) {
 			keyH.pageupPressed = false;
-			if(sound.volume < 30.0f) {
-				sound.volume += 5.0f;
+			if(SoundHandler.soundEffectVolume < 1f) {
+				SoundHandler.soundEffectVolume += 0.05f;
 			}
 			else {
 				System.out.println("Maximale Lautstärke erreicht!");
@@ -208,12 +213,13 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		if(keyH.pagedownPressed == true) {
 			keyH.pagedownPressed = false;
-			if(sound.volume > -30.0f) {
-				sound.volume -= 5.0f;
+			if(SoundHandler.soundEffectVolume > -1f) {
+				SoundHandler.soundEffectVolume -= 0.05f;
 			}
 			else {
 				System.out.println("Minimale Lautstärke erreicht!");
 			}
 		}
+		SoundHandler.updateVolume();
 	}
 }

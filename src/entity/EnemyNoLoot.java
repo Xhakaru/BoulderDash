@@ -14,8 +14,8 @@ public class EnemyNoLoot extends Entity{
 	
 	public int screenX;
 	public int screenY;
-	private int[] worldSpawnX = {9999, 9999, 9999, 4};
-	private int[] worldSpawnY = {9999, 9999, 9999, 14};
+	private int[] worldSpawnX = {9999, 9999, 9999, 4, 9999};
+	private int[] worldSpawnY = {9999, 9999, 9999, 14, 9999};
 	
 	private BufferedImage image = null;
 	
@@ -46,23 +46,22 @@ public class EnemyNoLoot extends Entity{
 		}
 	}
 	
-	public boolean checkPlayer() {
+	public void checkPlayer() {
 		if(worldX == gp.player.worldX && worldY == gp.player.worldY) {
-			return true;
+			gp.player.sterben("Gegner", screenX / gp.tileSize, screenY / gp.tileSize, "0");
 		}
 		if(worldX == gp.player.worldX + gp.tileSize && worldY == gp.player.worldY) {
-			return true;
+			gp.player.sterben("Gegner", screenX / gp.tileSize, screenY / gp.tileSize, "O");
 		}
 		if(worldX == gp.player.worldX - gp.tileSize && worldY == gp.player.worldY) {
-			return true;
+			gp.player.sterben("Gegner", screenX / gp.tileSize, screenY / gp.tileSize, "W");
 		}
 		if(worldX == gp.player.worldX && worldY == gp.player.worldY + gp.tileSize) {
-			return true;
+			gp.player.sterben("Gegner", screenX / gp.tileSize, screenY / gp.tileSize, "S");
 		}
 		if(worldX == gp.player.worldX && worldY == gp.player.worldY - gp.tileSize) {
-			return true;
+			gp.player.sterben("Gegner", screenX / gp.tileSize, screenY / gp.tileSize, "N");
 		}
-		return false;
 	}
 	
 	public void enemyMovement() {
@@ -123,6 +122,40 @@ public class EnemyNoLoot extends Entity{
 		}
 	}
 	
+	public void steinAufKopf() {
+		if(gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize] == 4 || 
+				gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize - 1] == 4 || 
+				gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize] == 1 || 
+				gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize - 1] == 1) {
+			gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize] = 7;
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize - 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize - 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize - 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize - 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize - 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize - 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize + 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize][worldY / gp.tileSize + 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize + 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize + 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize + 1] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize + 1] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize - 1][worldY / gp.tileSize] = 7;
+			}
+			if(gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize] != 2) {
+				gp.tileM.mapTileNum[worldX / gp.tileSize + 1][worldY / gp.tileSize] = 7;
+			}
+			worldSpawnX[gp.welt - 1] = 9999;
+		}
+	}
+	
 	public void enemySprite() {
 		if(spriteNum == 1) {
 			image = enemy_gray_f1;
@@ -147,10 +180,9 @@ public class EnemyNoLoot extends Entity{
 	public void update() {
 		if(worldSpawnX[gp.welt - 1] != 9999) {
 			
-			if(checkPlayer()) {
-				gp.player.sterben("Gegner");
-			}
+			checkPlayer();
 			
+			steinAufKopf();
 			enemySprite();
 			
 			//Gegner updatet sich nur alle 11 Frames
@@ -189,8 +221,19 @@ public class EnemyNoLoot extends Entity{
 	public void draw(Graphics2D g2) {
 		if(worldSpawnX[gp.welt - 1] != 9999) {
 			
-			screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize;
-			screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize;
+			if(gp.tileM.counterXkameraPos == true) {
+				screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize + gp.tileM.actualXkameraMovement;
+			}
+			else {
+				screenX = worldX - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbLeft * gp.tileSize - gp.tileM.actualXkameraMovement;
+			}
+			
+			if(gp.tileM.counterYkameraPos == true) {
+				screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize + gp.tileM.actualYkameraMovement;
+			}
+			else {
+				screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize - gp.tileM.actualYkameraMovement;
+			}
 			
 			g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 			

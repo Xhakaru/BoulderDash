@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -23,8 +24,8 @@ public class Player extends Entity{
 	public int leben = 3;
 	public int varX = 0;
 	public int varY = 0;
-	private int[] worldSpawnX = {8, 8, 3, 18};
-	private int[] worldSpawnY = {6, 6, 2, 19};
+	private int[] worldSpawnX = {8, 8, 3, 18, 1};
+	private int[] worldSpawnY = {6, 6, 2, 19, 1};
 	
 	private BufferedImage image = null;
 	
@@ -175,13 +176,20 @@ public class Player extends Entity{
 		screenY = worldY - gp.tileM.chunks[gp.tileM.playerChunkY][gp.tileM.playerChunkX].sbUp * gp.tileSize + gp.tileSize;
 	}
 	
-	public void sterben(String grund) {
+	public void sterben(String grund, int col, int row, String direction) {
+		gp.animation.startDeathanimation(grund, col, row, direction);
 		leben -= 1;
+	}
+	
+	public void sterben2(String grund) {
 		if(grund == "Gegner") {
 			System.out.println("Der Gegner hat dich getötet.");
 		}
-		if(grund == "Stein Air") {
-			System.out.println("Ein Stein hat dich getötet.");
+		if(grund == "Gegner mit Loot") {
+			System.out.println("Der Gegner hat dich getötet, er hätte etwas wichtiges dabei gehabt!");
+		}
+		if(grund == "Rubin Ground") {
+			System.out.println("Ein Rubin hat dich zerschmettert, dabei sollst du die doch sammeln.");
 		}
 		if(grund == "Stein Ground") {
 			System.out.println("Ein Stein hat dich zerschmettert.");
@@ -200,12 +208,16 @@ public class Player extends Entity{
 			System.out.println("Du bist mit deinen neuen Leben im ersten Level neu gespawnt.");
 		}
 		
+		gp.enemyWL.clearEnemyWithLoot();
 		switch(gp.welt) {
 			case(3):
 				gp.tileM.loadMap("/maps/world03.txt");
 				break;
 			case(4):
 				gp.tileM.loadMap("/maps/world04.txt");
+				break;
+			case(5):
+				gp.tileM.loadMap("/maps/world05.txt");
 				break;
 		}
 		setDefaultValues(gp.welt);
@@ -220,7 +232,7 @@ public class Player extends Entity{
 		
 		if(keyH.backspacePressed == true) {
 			keyH.backspacePressed = false;
-			sterben("Retry");
+			sterben("Retry", 0, 0, "null");
 		}
 		
 		if(keyH.upPressed == true || 
@@ -253,18 +265,53 @@ public class Player extends Entity{
 			finish = false;
 			gp.cChecker.checkTile(this);
 			
+			if(keyH.shiftPressed == true && direction == "left") {                            //this is for the stuff while shift is hold.
+                direction = "";
+                int row = worldX / gp.tileSize;
+                row = row -1;
+                int col = worldY / gp.tileSize;
+                if(gp.tileM.mapTileNum[row][col] == 0 || gp.tileM.mapTileNum[row][col] == 1) {
+                	gp.tileM.mapTileNum[row][col] = 5;
+                }
+            }
+            if(keyH.shiftPressed == true && direction == "right") {
+                direction = "";
+                int row = worldX / gp.tileSize;
+                row = row +1;
+                int col = worldY / gp.tileSize;
+                if(gp.tileM.mapTileNum[row][col] == 0 || gp.tileM.mapTileNum[row][col] == 1) {
+                    gp.tileM.mapTileNum[row][col] = 5;
+                }
+            }
+            if(keyH.shiftPressed == true && direction == "up") {
+                direction = "";
+                int row = worldX / gp.tileSize;
+                int col = worldY / gp.tileSize;
+                col = col -1;
+                if(gp.tileM.mapTileNum[row][col] == 0 || gp.tileM.mapTileNum[row][col] == 1) {
+                    gp.tileM.mapTileNum[row][col] = 5;
+                }
+            }
+            if(keyH.shiftPressed == true && direction == "down") {
+                direction = "";
+                int row = worldX / gp.tileSize;
+                int col = worldY / gp.tileSize;
+                col = col +1;
+                if(gp.tileM.mapTileNum[row][col] == 0 || gp.tileM.mapTileNum[row][col] == 1) {
+                    gp.tileM.mapTileNum[row][col] = 5;
+                }
+            }
+			
 			if(stone == true) {
 				switch(direction) {
 				case "left":
 					varX = -gp.tileSize;
-					varY = 0;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
+					gp.stoneM.stonePush(worldX, worldY, varX);
 					System.out.println("leftEaten");
 			        break;
 				case "right":
 					varX = gp.tileSize;
-					varY = 0;
-					gp.tileM.stonePush(worldX, worldY, varX, varY);
+					gp.stoneM.stonePush(worldX, worldY, varX);
 					System.out.println("rightEaten");
 			        break;
 				}
@@ -319,25 +366,28 @@ public class Player extends Entity{
 			}
 			
 			if(finish == true) {
-				System.out.println("Level geschafft! Let's go ins Nächste.");
-				if(gp.welt != 4) {
+				if(gp.welt != 5) {
+					System.out.println("Level geschafft! Let's go ins Nächste.");
 					gp.welt += 1;
+					switch(gp.welt) {
+						case(3):
+							gp.tileM.loadMap("/maps/world03.txt");
+							break;
+						case(4):
+							gp.tileM.loadMap("/maps/world04.txt");
+							break;
+						case(5):
+							gp.tileM.loadMap("/maps/world05.txt");
+							break;
+					}
+					setDefaultValues(gp.welt);
+					gp.enemyNL.setDefaultValues();
+					gp.levelB.resetTime();
 				}
 				else {
 					System.out.println("Level geschafft! Du hast das Spiel durchgespielt.");
 					gp.animation.startEndanimation();
 				}
-				switch(gp.welt) {
-					case(3):
-						gp.tileM.loadMap("/maps/world03.txt");
-						break;
-					case(4):
-						gp.tileM.loadMap("/maps/world04.txt");
-						break;
-				}
-				setDefaultValues(gp.welt);
-				gp.enemyNL.setDefaultValues();
-				gp.levelB.resetTime();
 			}
 			
 			spriteCounter++;
@@ -389,9 +439,22 @@ public class Player extends Entity{
 			}
 		}
 	}
-
+	
 	public void draw(Graphics2D g2) {
 		
+		if(gp.tileM.counterXkameraPos == true) {
+			screenX += gp.tileM.actualXkameraMovement;
+		}
+		else {
+			screenX -= gp.tileM.actualXkameraMovement;
+		}
+		
+		if(gp.tileM.counterYkameraPos == true) {
+			screenY += gp.tileM.actualYkameraMovement;
+		}
+		else {
+			screenY -= gp.tileM.actualYkameraMovement;
+		}
 		
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 		

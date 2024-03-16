@@ -8,7 +8,10 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 import entity.EnemyNoLoot;
+import entity.EnemyWithLoot;
 import entity.Player;
+import entity.RubinManager;
+import entity.StoneManager;
 import tile.TileManager;
 import tile.Levelbord;
 
@@ -33,16 +36,27 @@ public class GamePanel extends JPanel implements Runnable{
 	// FPS
 	int FPS = 60;
 	
+	//Game States
+	public int gameState;
+	public final int titleState = 0;
+	public final int playState = 1;
+	public final int pauseState = 2;
+	
+	//Standard World
 	public int welt = 3;
 	
+	public Login login = new Login(this);
+	public StoneManager stoneM = new StoneManager(this);
+	public RubinManager rubinM = new RubinManager(this);
+	public EnemyWithLoot enemyWL = new EnemyWithLoot(this);
+	public Levelbord levelB = new Levelbord(this);
 	public TileManager tileM = new TileManager(this);
-	public KeyHandler keyH = new KeyHandler();
+	public KeyHandler keyH = new KeyHandler(this);
 	public Thread gameThread;
 	public Player player = new Player(this, keyH);
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public Sound sound = new Sound();
-	public Interface ui = new Interface();
-	public Levelbord levelB = new Levelbord(this);
+	public Interface ui = new Interface(this);
 	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
 	public Animation animation = new Animation(this);
 	
@@ -65,6 +79,10 @@ public class GamePanel extends JPanel implements Runnable{
 		gameThread.start();
 		playSE(0);
 		playMusic(2);
+		
+		//setDefault GameState
+		gameState = titleState;
+		
 	}
 
 	
@@ -85,7 +103,9 @@ public class GamePanel extends JPanel implements Runnable{
 			if(delta >= 1) {
 				update();
 				repaint();
-				threadRunTime++;
+				if(animationPause == false) {
+					threadRunTime++;
+				}
 				time = Math.round(threadRunTime/60);
 				delta--;
 			}
@@ -95,38 +115,64 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void update() {
 		
-		if(!animationPause) {
-			setVolume();
-			player.update();
-			tileM.update();
-			levelB.update();
-			enemyNL.update();
-		}
-		else {
-			animation.update();
+		switch(gameState) {
+			case(titleState):
+				login.update();
+				break;
+			
+			case(playState):
+				if(!animationPause) {
+					setVolume();
+					player.update();
+					tileM.update();
+					stoneM.update();
+					rubinM.update();
+					levelB.update();
+					enemyNL.update();
+					enemyWL.update();
+				}
+				else {
+					animation.update();
+				}
+				break;
+			
+			case(pauseState):
+				
+				break;
 		}
 	}
 	
 	public void paintComponent(Graphics g) {
 		
 		super.paintComponent(g);
-		
 		Graphics2D g2 = (Graphics2D)g;
 		
-		tileM.draw(g2);
-		
-		levelB.draw(g2);
-		
-		if(!animationPause) {
-			player.draw(g2);
-		}
-		
-		enemyNL.draw(g2);
-		
-		ui.draw(g2);
-		
-		if(animationPause) {
-			animation.draw(g2);
+		switch(gameState) {
+			case(titleState):
+				login.draw(g2);
+				break;
+			
+			case(playState):
+				
+				tileM.draw(g2);
+				stoneM.draw(g2);
+				rubinM.draw(g2);
+				
+				if(!animationPause) {
+					player.draw(g2);
+				}
+				
+				enemyNL.draw(g2);
+				enemyWL.draw(g2);
+				levelB.draw(g2);
+				ui.draw(g2);
+				animation.draw(g2);
+				break;
+				
+			case(pauseState):
+				
+				break;
+			
 		}
 		
 		g2.dispose();

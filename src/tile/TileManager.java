@@ -24,17 +24,35 @@ public class TileManager {
 	public int playerChunkX, playerChunkY, playerChunkXlast, playerChunkYlast;
 	
 	public boolean stoneCollision = false;
-	public boolean fallingCol[];
-	public int stoneFallCounter = 0;
-	public int rubinFallCounter = 0;
-	public int spriteCounter = 0;
-	public int spriteNum = 1;
-	private int[] finishSpawnX = {9999, 9999, 38, 18};
-	private int[] finishSpawnY = {9999, 9999, 16, 20};
-	private int[] rubineFinishSpawn = {9999, 9999, 16, 14};
+	private boolean fallingCol[];
+	private int stoneFallCounter = 0;
+	private int rubinFallCounter = 0;
+	private int spriteCounter = 0;
+	private int spriteNum = 1;
+	private int spriteCounterExplosion = 0;
+	private int spriteNumExplosion = 0;
+	private int[] rubineFinishSpawn = {9999, 9999, 16, 14, 26};
+	private boolean startExplosion = false;
 	
-	BufferedImage rubin_f1, rubin_f2, rubin_f3, rubin_f4, rubin_f5, rubin_f6, rubin_f7, rubin_f8;
-	BufferedImage finish_grey_f1, finish_grey_f2, finish_grey_f3;
+	//TILE IDs
+	public static int dirtID = 0;
+	public static int rubinID = 1;
+	public static int borderID = 2;
+	public static int brickID = 3;
+	public static int stoneID = 4;
+	public static int backBlackID = 5;
+	
+	//Kamerafahrt
+	public boolean counterXkameraPos, counterYkameraPos;
+	private boolean kameraFahrtX = false;
+	private boolean kameraFahrtY = false;
+	public int actualXkameraMovement, actualYkameraMovement;
+	public int counterXkamera = 0;
+	public int counterYkamera = 0;
+	
+	public BufferedImage rubin_f1, rubin_f2, rubin_f3, rubin_f4, rubin_f5, rubin_f6, rubin_f7, rubin_f8;
+	public BufferedImage finish_grey_f1, finish_grey_f2, finish_grey_f3;
+	public BufferedImage explosion_dark_f1, explosion_dark_f2, explosion_dark_f3, explosion_dark_f4, explosion_dark_f5, explosion_dark_f6;
 	
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
@@ -51,6 +69,9 @@ public class TileManager {
 				break;
 			case(4):
 				loadMap("/maps/world04.txt");
+				break;
+			case(5):
+				loadMap("/maps/world05.txt");
 				break;
 		}
 		
@@ -73,14 +94,7 @@ public class TileManager {
 			tile[0].eat = true;
 			
 			tile[1] = new Tile();
-			rubin_f1 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f1.png"));
-			rubin_f2 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f2.png"));
-			rubin_f3 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f3.png"));
-			rubin_f4 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f4.png"));
-			rubin_f5 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f5.png"));
-			rubin_f6 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f6.png"));
-			rubin_f7 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f7.png"));
-			rubin_f8 = ImageIO.read(getClass().getResourceAsStream("/tiles/rubin_f8.png"));
+			tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt_gray_dark.png"));
 			tile[1].eat = true;
 			tile[1].item = true;
 			
@@ -93,7 +107,7 @@ public class TileManager {
 			tile[3].collision = true;
 			
 			tile[4] = new Tile();
-			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/stone_dark_gray.png"));
+			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt_gray_dark.png"));
 			tile[4].stone = true;
 			tile[4].collision = true;
 			
@@ -106,12 +120,34 @@ public class TileManager {
 			finish_grey_f3 = ImageIO.read(getClass().getResourceAsStream("/tiles/finish_grey_f3.png"));
 			tile[6].finish = true;
 			
+			tile[7] = new Tile();
+			explosion_dark_f1 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f1.png"));
+			explosion_dark_f2 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f2.png"));
+			explosion_dark_f3 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f3.png"));
+			explosion_dark_f4 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f4.png"));
+			explosion_dark_f5 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f5.png"));
+			explosion_dark_f6 = ImageIO.read(getClass().getResourceAsStream("/tiles/explosion/explosion_dark_f6.png"));
+			tile[7].collision = true;
+			
+			tile[8] = new Tile();
+			tile[8].image = ImageIO.read(getClass().getResourceAsStream("/tiles/finish_grey_closed.png"));
+			tile[8].collision = true;
+			
+			//Spawnpoint für Gegner mit Loot
+			tile[9] = new Tile();
+			tile[9].image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt_gray_dark.png"));
+			
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void loadMap(String map) {
+		gp.levelB.rubineGesammelt = false;
+		gp.levelB.setDefaultTileBord();
+		gp.stoneM.setDefault();
+		gp.rubinM.setDefault();
+		
 		try {
 			InputStream is = getClass().getResourceAsStream(map);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -128,6 +164,19 @@ public class TileManager {
 					String numbers[] = line.split(" ");
 					
 					int num = Integer.parseInt(numbers[col]);
+					
+					if(num == stoneID) {
+						gp.stoneM.addStoneToStoneList(col * gp.tileSize, row * gp.tileSize);
+					}
+					
+					if(num == rubinID) {
+						gp.rubinM.addRubinToRubinList(col * gp.tileSize, row * gp.tileSize);
+					}
+					
+					if(num == 9) {
+						gp.enemyWL.spawnEnemyWithLoot(col, row);
+						num = 5;
+					}
 					
 					mapTileNum[col][row] = num;
 					col++;
@@ -215,130 +264,36 @@ public class TileManager {
 		
 		playerInChunk = playerChunkY * screenInWorldCol + playerChunkX + 1;
 		
-		if(playerChunkXlast != playerChunkX || playerChunkYlast != playerChunkY) {
-			
-		}
-	}
-	
-	public void stonePush(int worldX, int worldY, int varX, int varY) {
-		int x = worldX + varX;
-		int y = worldY + varY;
-		int c = worldX;
-		int v = worldY;
-		int tileCol = 0;
-		int tileRow = 0;
-		
-		if(varX > 0) {
-			tileCol = c / gp.tileSize;
-			tileRow = v / gp.tileSize;
-			if(mapTileNum[tileCol + 2][tileRow] == 5) {
-				stoneCollision = false;
-				mapTileNum[tileCol + 1][tileRow] = 5;
-				
-				tileCol = x / gp.tileSize;
-				tileRow = y / gp.tileSize;
-				mapTileNum[tileCol + 1][tileRow] = 4;
+		if(playerChunkXlast != playerChunkX) {
+			if(playerChunkXlast - playerChunkX == -1) {
+				counterXkameraPos = true;
+				kameraFahrtX = true;
 			}
 			else {
-				stoneCollision = true;
+				counterXkameraPos = false;
+				kameraFahrtX = true;
 			}
 		}
-		else if(varX < 0) {
-			tileCol = c / gp.tileSize;
-			tileRow = v / gp.tileSize;
-			if(mapTileNum[tileCol - 2][tileRow] == 5) {
-				stoneCollision = false;
-				mapTileNum[tileCol - 1][tileRow] = 5;
-				
-				tileCol = x / gp.tileSize;
-				tileRow = y / gp.tileSize;
-				mapTileNum[tileCol - 1][tileRow] = 4;
+		if(playerChunkYlast != playerChunkY) {
+			if(playerChunkYlast - playerChunkY == -1) {
+				counterYkameraPos = true;
+				kameraFahrtY = true;
 			}
 			else {
-				stoneCollision = true;
-			}
-		}
-	}
-	
-	public void stoneFall(int col, int row) {
-		if(mapTileNum[col][row] == 4) {
-			if(col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize) {
-				gp.player.sterben("Stein Ground");
-			}
-			boolean skip = false;
-			if(!fallingCol[col] && col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize - 1) { 
-				skip = true; 
-			}
-			boolean playerInWayXneg = false;
-			if(gp.player.worldY / gp.tileSize == row && gp.player.worldX / gp.tileSize == col - 1) {
-				playerInWayXneg = true;
-			}
-			boolean playerInWayXpos = false;
-			if(gp.player.worldY / gp.tileSize == row && gp.player.worldX / gp.tileSize == col + 1) {
-				playerInWayXpos = true;
-			}
-			boolean playerInWayXnegMinusOne = false;
-			if(gp.player.worldY / gp.tileSize == row + 1 && gp.player.worldX / gp.tileSize == col - 1) {
-				playerInWayXnegMinusOne = true;
-			}
-			boolean playerInWayXposMinusOne = false;
-			if(gp.player.worldY / gp.tileSize == row + 1 && gp.player.worldX / gp.tileSize == col + 1) {
-				playerInWayXposMinusOne = true;
-			}
-			if(mapTileNum[col][row + 1] == 5 && !skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col][row + 1] = 4;
-//				gp.playSE(5);
-				fallingCol[col] = true;
-				if(mapTileNum[col][row + 2] != 5) {
-					fallingCol[col] = false;
-				}
-			}
-			else if(mapTileNum[col][row + 1] == 4 && 
-					mapTileNum[col - 1][row] == 5 && 
-					mapTileNum[col - 1][row + 1] == 5 && 
-					!playerInWayXneg && 
-					!playerInWayXnegMinusOne && 
-					!skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col - 1][row] = 4;
-//				gp.playSE(5);
-			}
-			else if(mapTileNum[col][row + 1] == 4 && 
-					mapTileNum[col + 1][row] == 5 && 
-					mapTileNum[col + 1][row + 1] == 5 && 
-					!playerInWayXpos && 
-					!playerInWayXposMinusOne && 
-					!skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col + 1][row] = 4;
-//				gp.playSE(5);
-			}
-			else if(mapTileNum[col][row + 1] == 1 && 
-					mapTileNum[col - 1][row] == 5 && 
-					mapTileNum[col - 1][row + 1] == 5 && 
-					!playerInWayXneg && 
-					!playerInWayXnegMinusOne && 
-					!skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col - 1][row] = 4;
-//				gp.playSE(5);
-			}
-			else if(mapTileNum[col][row + 1] == 1 && 
-					mapTileNum[col + 1][row] == 5 && 
-					mapTileNum[col + 1][row + 1] == 5 && 
-					!playerInWayXpos && 
-					!playerInWayXposMinusOne && 
-					!skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col + 1][row] = 4;
-//				gp.playSE(5);
+				counterYkameraPos = false;
+				kameraFahrtY = true;
 			}
 		}
 	}
 	
 	public void rubinFall(int col, int row) {
+		int Xcol = gp.player.worldX / gp.tileSize;
+		int Yrow = gp.player.worldY / gp.tileSize;
+		
 		if(mapTileNum[col][row] == 1) {
+			if(col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize) {
+				gp.player.sterben("Rubin Ground", 0, 0, "null");
+			}
 			boolean skip = false;
 			if(!fallingCol[col] && col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize - 1) { 
 				skip = true; 
@@ -358,6 +313,9 @@ public class TileManager {
 			boolean playerInWayXposMinusOne = false;
 			if(gp.player.worldY / gp.tileSize == row + 1 && gp.player.worldX / gp.tileSize == col + 1) {
 				playerInWayXposMinusOne = true;
+			}
+			if(col == Xcol && row == Yrow -1 && skip == false) {
+				gp.player.sterben("Stein Ground", 0, 0, "null");
 			}
 			if(mapTileNum[col][row + 1] == 5 && !skip) {
 				mapTileNum[col][row] = 5;
@@ -368,17 +326,7 @@ public class TileManager {
 					fallingCol[col] = false;
 				}
 			}
-			else if(mapTileNum[col][row + 1] == 1 && 
-					mapTileNum[col - 1][row] == 5 && 
-					mapTileNum[col - 1][row + 1] == 5 && 
-					!playerInWayXneg && 
-					!playerInWayXnegMinusOne && 
-					!skip) {
-				mapTileNum[col][row] = 5;
-				mapTileNum[col - 1][row] = 1;
-//				gp.playSE(5);
-			}
-			else if(mapTileNum[col][row + 1] == 1 && 
+			else if(mapTileNum[col][row + 1] == 4 && 
 					mapTileNum[col + 1][row] == 5 && 
 					mapTileNum[col + 1][row + 1] == 5 && 
 					!playerInWayXpos && 
@@ -398,7 +346,7 @@ public class TileManager {
 				mapTileNum[col - 1][row] = 1;
 //				gp.playSE(5);
 			}
-			else if(mapTileNum[col][row + 1] == 4 && 
+			else if(mapTileNum[col][row + 1] == 1 && 
 					mapTileNum[col + 1][row] == 5 && 
 					mapTileNum[col + 1][row + 1] == 5 && 
 					!playerInWayXpos && 
@@ -408,12 +356,35 @@ public class TileManager {
 				mapTileNum[col + 1][row] = 1;
 //				gp.playSE(5);
 			}
-			if(mapTileNum[col][row] == 1) {															//guckt ob der Spieler im Weg ist
-				if(col == gp.player.worldX / gp.tileSize && row == gp.player.worldY / gp.tileSize) {
-					//Spieler wurde getroffen (Sound-Effect und Leben abziehen/Game Over)
-					gp.player.leben--;
-					System.out.println("Der Spieler hat nur noch " + gp.player.leben + " Leben.");
-				}
+			else if(mapTileNum[col][row + 1] == 1 && 
+					mapTileNum[col - 1][row] == 5 && 
+					mapTileNum[col - 1][row + 1] == 5 && 
+					!playerInWayXneg && 
+					!playerInWayXnegMinusOne && 
+					!skip) {
+				mapTileNum[col][row] = 5;
+				mapTileNum[col - 1][row] = 1;
+//				gp.playSE(5);
+			}
+			else if(mapTileNum[col][row + 1] == 3 && 
+					mapTileNum[col + 1][row] == 5 && 
+					mapTileNum[col + 1][row + 1] == 5 && 
+					!playerInWayXpos && 
+					!playerInWayXposMinusOne && 
+					!skip) {
+				mapTileNum[col][row] = 5;
+				mapTileNum[col + 1][row] = 1;
+//				gp.playSE(5);
+			}
+			else if(mapTileNum[col][row + 1] == 3 && 
+					mapTileNum[col - 1][row] == 5 && 
+					mapTileNum[col - 1][row + 1] == 5 && 
+					!playerInWayXneg && 
+					!playerInWayXnegMinusOne && 
+					!skip) {
+				mapTileNum[col][row] = 5;
+				mapTileNum[col - 1][row] = 1;
+//				gp.playSE(5);
 			}
 		}
 	}
@@ -522,19 +493,151 @@ public class TileManager {
 	
 	public void spawnFinish() {
 		if(gp.player.rubinCounter >= rubineFinishSpawn[gp.welt - 1]) {
-			mapTileNum[finishSpawnX[gp.welt - 1]][finishSpawnY[gp.welt - 1]] = 6;
+			gp.levelB.rubineGesammelt = true;
+			gp.levelB.setDefaultTileBord();
+			
+			int counterX = 0;
+			int counterY = 0;
+			while(counterX < gp.maxWorldCol && counterY < gp.maxWorldRow) {
+				
+				while(counterX < gp.maxWorldCol) {
+					
+					if(mapTileNum[counterX][counterY] == 8) {
+						mapTileNum[counterX][counterY] = 6;
+					}
+					counterX++;
+				}
+				if(counterX == gp.maxWorldCol) {
+					counterX = 0;
+					counterY++;
+				}
+			}
+		}
+	}
+	
+	public void explosionSprite() {
+		if(startExplosion == true) {
+			spriteCounterExplosion++;
+			if(spriteCounterExplosion >= 4) {
+				spriteNumExplosion++;
+				switch(spriteNumExplosion){
+					case(1):
+						tile[7].image = tile[5].image;
+						break;
+					case(2):
+						tile[7].image = explosion_dark_f1;
+						break;
+					case(3):
+						tile[7].image = explosion_dark_f1;
+						break;
+					case(4):
+						tile[7].image = explosion_dark_f2;
+						break;
+					case(5):
+						tile[7].image = explosion_dark_f2;
+						break;
+					case(6):
+						tile[7].image = explosion_dark_f3;
+						break;
+					case(7):
+						tile[7].image = explosion_dark_f3;
+						break;
+					case(8):
+						tile[7].image = explosion_dark_f4;
+						break;
+					case(9):
+						tile[7].image = explosion_dark_f4;
+						break;
+					case(10):
+						tile[7].image = explosion_dark_f5;
+						break;
+					case(11):
+						tile[7].image = explosion_dark_f5;
+						break;
+					case(12):
+						tile[7].image = explosion_dark_f5;
+						break;
+					case(13):
+						tile[7].image = explosion_dark_f6;
+						break;
+					case(14):
+						tile[7].image = explosion_dark_f6;
+						break;
+					case(15):
+						tile[7].image = explosion_dark_f6;
+						break;
+					case(16):
+						tile[7].image = explosion_dark_f6;
+						break;
+					case(17):
+						tile[7].image = tile[5].image;
+						break;
+					case(18):
+						tile[7].image = tile[5].image;
+						break;
+					case(19):
+						tile[7].image = tile[5].image;
+						break;
+					case(20):
+						tile[7].image = tile[5].image;
+						break;
+					case(21):
+						tile[7].image = tile[5].image;
+						break;
+					case(22):
+						int counterX = 0;
+						int counterY = 0;
+						while(counterX < gp.maxWorldCol && counterY < gp.maxWorldRow) {
+							
+							while(counterX < gp.maxWorldCol) {
+								
+								if(mapTileNum[counterX][counterY] == 7) {
+									mapTileNum[counterX][counterY] = 5;
+								}
+								counterX++;
+							}
+							if(counterX == gp.maxWorldCol) {
+								counterX = 0;
+								counterY++;
+							}
+						}
+						break;
+				}
+				spriteCounterExplosion = 0;
+				startExplosion = true;
+			}
 		}
 	}
 	
 	public void update() {
 		
 		spawnFinish();
+		explosionSprite();
 		
 		inChunk();
 		
-		rubinSprite();
+//		rubinSprite();
 		finishSprite();
 		
+		//Kamerafahrt
+		if(kameraFahrtX == true) {
+			actualXkameraMovement = chunks[0][1].sbLeft * gp.tileSize - chunks[0][0].sbLeft * gp.tileSize - counterXkamera;
+			counterXkamera += 16;
+			if(actualXkameraMovement == 0) {
+				kameraFahrtX = false;
+				counterXkamera = 0;
+			}
+		}
+		if(kameraFahrtY == true) {
+			actualYkameraMovement = chunks[1][0].sbUp * gp.tileSize - chunks[0][0].sbUp * gp.tileSize - counterYkamera;
+			counterYkamera += 8;
+			if(actualYkameraMovement == 0) {
+				kameraFahrtY = false;
+				counterYkamera = 0;
+			}
+		}
+		
+		//Sprite Wechsel
 		spriteCounter++;
 		if(spriteCounter > 6) {
 			if(spriteNum == 1) {
@@ -601,22 +704,34 @@ public class TileManager {
 			
 			int tileNum = mapTileNum[worldCol][worldRow];
 			
-			stoneFallCounter++;
-			if(stoneFallCounter > 18) {
-				stoneFall(worldCol, worldRow);
-				stoneFallCounter = 0;
+			if(tileNum == 7) {
+				startExplosion = true;
 			}
 			
-			rubinFallCounter++;
-			if(rubinFallCounter > 18) {
-				rubinFall(worldCol, worldRow);
-				rubinFallCounter = 0;
-			}
+//			rubinFallCounter++;
+//			if(rubinFallCounter > 18 && gp.animationPause == false) {
+//				rubinFall(worldCol, worldRow);
+//				rubinFallCounter = 0;
+//			}
 			
 			int worldX = worldCol * gp.tileSize;
 			int worldY = worldRow * gp.tileSize;
-			int screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize;
-			int screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize;
+			int screenX = 0;
+			int screenY = 0;
+			
+			if(counterXkameraPos == true) {
+				screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize + actualXkameraMovement;
+			}
+			else {
+				screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize - actualXkameraMovement;
+			}
+			
+			if(counterYkameraPos == true) {
+				screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize + actualYkameraMovement;
+			}
+			else {
+				screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize - actualYkameraMovement;
+			}
 			
 			g2.drawImage(tile[tileNum].image, screenX, screenY + gp.tileSize, gp.tileSize, gp.tileSize, null);
 			

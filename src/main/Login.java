@@ -6,6 +6,8 @@ public class Login {
 
 	private GamePanel gp;
 	
+	private Database db = new Database();
+	
 	//TitleScreen State
 	private int titleScreenState;
 	private final int titleState = 0;

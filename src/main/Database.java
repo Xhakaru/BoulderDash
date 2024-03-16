@@ -7,21 +7,27 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
-	public void connection() {
+	
+	private Connection connection;
+	private String usernameDB;
+	private String mailDB;
+	private String passwordDB;
+	
+	public void connect(String sql) {
     	// Verbindungszeichenfolge erstellen
         String url = "jdbc:mysql://192.168.178.47:3306/sys";
         String user = "root";
         String password = "boulderdash-mysql";
 
         // Verbindung herstellen
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+        try {
+        	connection = DriverManager.getConnection(url, user, password);
             System.out.println("Verbindung zur Datenbank hergestellt.");
 
             // Hier kannst du SQL-Abfragen ausführen
             // Zum Beispiel:
             // Statement statement = connection.createStatement();
             // ResultSet resultSet = statement.executeQuery("SELECT * FROM deineTabelle");
-            String sql = "SELECT * FROM users";
 
             // Ein Statement-Objekt erstellen
             Statement statement = connection.createStatement();
@@ -31,11 +37,12 @@ public class Database {
             
             while (resultSet.next()) {
                 int userid = resultSet.getInt("userid");
-                String username = resultSet.getString("username");
-                String mail = resultSet.getString("mail");
+                usernameDB = resultSet.getString("username");
+                mailDB = resultSet.getString("mail");
+                passwordDB = resultSet.getString("pw");
                 // Weitere Spalten entsprechend deiner Tabelle
 
-                System.out.println("ID: " + userid + ", Username: " + username + ", Email: " + mail);
+                System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Pawwsord: " + passwordDB);
                 // Weitere Spalten ausgeben, falls vorhanden
             }
 
@@ -43,4 +50,25 @@ public class Database {
             System.err.println("Fehler beim Verbinden zur Datenbank: " + e.getMessage());
         }
     }
+	
+	public void disconnect() {
+		try {
+	        if (connection != null) {
+	        	connection.close();
+	            System.out.println("Verbindung zur Datenbank getrennt.");
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Fehler beim Trennen der Verbindung zur Datenbank: " + e.getMessage());
+	    }
+	}
+	
+	public boolean ueberpruefe(String nameOrMail, String password) {
+		String SQL = "select * from users where username = " + '"' + nameOrMail + '"' + "OR mail = " +'"'+ nameOrMail +'"'+ " AND pw = " +'"'+ password+'"';
+		connect(SQL);
+		if(usernameDB.equals(nameOrMail)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
+			System.out.println("true");
+			return true;
+		}
+		return false;
+	}
 }

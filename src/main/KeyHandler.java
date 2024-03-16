@@ -29,7 +29,9 @@ public class KeyHandler implements KeyListener{
 				}
 			}
 			else if(gp.login.getTitleScreenState() == gp.login.getLoginState()) {
-				
+				if(code == 130) {
+					gp.login.tab();
+				}
 			}
 		}
 		else if(gp.gameState == gp.playState) {

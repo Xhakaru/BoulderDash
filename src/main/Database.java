@@ -66,9 +66,10 @@ public class Database {
 		String SQL = "select * from users where username = " + '"' + nameOrMail + '"' + "OR mail = " +'"'+ nameOrMail +'"'+ " AND pw = " +'"'+ password+'"';
 		connect(SQL);
 		if(usernameDB.equals(nameOrMail)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
-			System.out.println("true");
+			System.out.println("Eingabe stimmt überein.");
 			return true;
 		}
+		System.out.println("Eingabe Stimmt nicht überein");
 		return false;
 	}
 }

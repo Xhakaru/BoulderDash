@@ -32,6 +32,13 @@ public class KeyHandler implements KeyListener{
 				if(code == 130) {
 					gp.login.tab();
 				}
+				if(gp.login.getLoginAllowed() == true && gp.login.getFieldSelection() == gp.login.getLoginButton()) {
+					if(code == KeyEvent.VK_ENTER) {
+						if(gp.login.compareUserDB()) {
+							gp.gameState = gp.playState;
+						}
+					}
+				}
 			}
 		}
 		else if(gp.gameState == gp.playState) {

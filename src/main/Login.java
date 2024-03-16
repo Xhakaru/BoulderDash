@@ -31,8 +31,8 @@ public class Login {
 	private boolean loginAllowed;
 	
 	//Login
-	private String user;
-	private String password;
+	private String user = "admin";
+	private String password = "1234";
 	
 	public Login(GamePanel gp) {
 		this.gp = gp;
@@ -100,8 +100,9 @@ public class Login {
 				g2.setColor(Color.white);
 				g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - 3*gp.tileSize, 10*gp.tileSize, gp.tileSize);
 				g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - gp.tileSize, 10*gp.tileSize, gp.tileSize);
-				String text = Integer.toString(fieldSelection);
-				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - gp.tileSize);
+				if(loginAllowed == true) {
+					g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize, 4*gp.tileSize, gp.tileSize);
+				}
 				g2.setColor(Color.red);
 				switch(fieldSelection) {
 					case(usernameField):
@@ -115,9 +116,18 @@ public class Login {
 						break;
 					
 					case(loginButton):
-						
+						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize, 4*gp.tileSize, gp.tileSize);
+						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize+1, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize+1, 4*gp.tileSize-2, gp.tileSize-2);
 						break;
 				}
+				g2.setColor(Color.black);
+				String text = user;
+				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize - 2*gp.tileSize - gp.tileSize/12);
+				text = password;
+				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize - gp.tileSize/12);
+				g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
+				text = "Login";
+				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize + 2*gp.tileSize - gp.tileSize/4);
 				break;
 		}
 	}
@@ -133,6 +143,18 @@ public class Login {
 	
 	public int getLoginState() {
 		return loginState;
+	}
+	
+	public boolean getLoginAllowed() {
+		return loginAllowed;
+	}
+	
+	public int getFieldSelection() {
+		return fieldSelection;
+	}
+	
+	public int getLoginButton(){
+		return loginButton;
 	}
 	
 	public void setTitleScreenState(int x) {

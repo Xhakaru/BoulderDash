@@ -42,7 +42,7 @@ public class Database {
                 passwordDB = resultSet.getString("pw");
                 // Weitere Spalten entsprechend deiner Tabelle
 
-                System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Pawwsord: " + passwordDB);
+                System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Password: " + passwordDB);
                 // Weitere Spalten ausgeben, falls vorhanden
             }
 

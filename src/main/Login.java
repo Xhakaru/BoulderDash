@@ -3,6 +3,7 @@ package main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -68,6 +69,30 @@ public class Login {
 		}
 		if(fieldSelection > 2) {
 			fieldSelection = 0;
+		}
+	}
+	
+	public void addCharToUser(char x) {
+		user = user + x;
+	}
+	
+	public void addCharToPassword(char x) {
+		password = password + x;
+	}
+	
+	public void deleteLastChar() {
+		switch(fieldSelection) {
+			case(usernameField):
+				if(user.length() != 0) {
+					user = user.substring(0, user.length()-1);
+				}
+				break;
+			
+			case(passwordField):
+				if(password.length() != 0) {
+					password = password.substring(0, password.length()-1);
+				}
+				break;
 		}
 	}
 	
@@ -151,6 +176,14 @@ public class Login {
 	
 	public int getFieldSelection() {
 		return fieldSelection;
+	}
+	
+	public int getUsernameField() {
+		return usernameField;
+	}
+	
+	public int getPasswordField() {
+		return passwordField;
 	}
 	
 	public int getLoginButton(){

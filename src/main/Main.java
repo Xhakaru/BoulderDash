@@ -21,6 +21,8 @@ public class Main {
 		window.setResizable(false);
 		window.setTitle("Boulder Dash");
 		
+		Database db = new Database();
+		
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel);
 		
@@ -30,6 +32,8 @@ public class Main {
 		window.setVisible(true);
 
 		SoundHandler.loadSounds();
+		
+		db.connection();
 
 		gamePanel.startGameThread();
 

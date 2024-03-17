@@ -65,11 +65,26 @@ public class Database {
 	public boolean ueberpruefe(String nameOrMail, String password) {
 		String SQL = "select * from users where username = " + '"' + nameOrMail + '"' + "OR mail = " +'"'+ nameOrMail +'"'+ " AND pw = " +'"'+ password+'"';
 		connect(SQL);
-		if(usernameDB.equals(nameOrMail)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
-			System.out.println("Eingabe stimmt überein.");
-			return true;
+		if(usernameDB != null || mailDB != null || passwordDB != null) {
+			if(usernameDB.equals(nameOrMail)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
+				System.out.println("Eingabe stimmt überein.");
+				return true;
+			}
 		}
 		System.out.println("Eingabe Stimmt nicht überein");
+		return false;
+	}
+	
+	public boolean regestrieren(String name, String mail, String password) {
+		String SQL = "INSERT INTO users (username, mail, pw) values (" + name + ", " + mail + ", " + password;
+		String valuesCheck = "select * from users where username = " + '"' + name + '"' + "OR mail = " +'"'+ mail +'"'+ " AND pw = " +'"'+ password +'"';
+		connect(valuesCheck);
+		if(usernameDB != null || mailDB != null || passwordDB != null) {
+			connect(SQL);
+			System.out.println("Der Benutzer wurde erfolgreich angelegt.");
+			return true;
+		}
+		System.out.println("Der Benutzer existiert bereits!");					// ich habe noch keine Ahnug ob das geht.
 		return false;
 	}
 }

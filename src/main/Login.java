@@ -3,7 +3,6 @@ package main;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -31,8 +30,10 @@ public class Login {
 	private boolean loginAllowed;
 	
 	//Login
-	private String user;
-	private String password;
+	private String user = "";
+	private String password = "";
+	
+	private boolean wrongImput = false;
 	
 	public Login(GamePanel gp) {
 		this.gp = gp;
@@ -57,8 +58,13 @@ public class Login {
 	}
 	
 	public boolean compareUserDB() {
-		return true;
-		//Vincent
+		db.ueberpruefe(user, password);
+		if(db.ueberpruefe(user, password) == true) {			// this compares the values with the database and if its result is true than it will continue
+			wrongImput = false;
+			return true;
+		}
+		wrongImput = true;
+		return false;
 	}
 	
 	public void tab() {
@@ -152,6 +158,11 @@ public class Login {
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
 				text = "Login";
 				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize + 2*gp.tileSize - gp.tileSize/4);
+				if(wrongImput == true) {
+					g2.setColor(Color.white);
+					text = "Eingaben stimmen nicht überien!";
+					g2.drawString(text, (gp.maxScreenCol-19)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/3)*gp.tileSize + 2*gp.tileSize - gp.tileSize/4);
+				}
 				break;
 		}
 	}

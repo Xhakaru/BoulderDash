@@ -27,6 +27,7 @@ public class Login {
 	private final int usernameField = 0;
 	private final int passwordField = 1;
 	private final int loginButton = 2;
+	private final int registry = 3;
 	private boolean loginAllowed;
 	
 	//Login
@@ -67,12 +68,17 @@ public class Login {
 		return false;
 	}
 	
+	public boolean registry() {
+		db.registry(user, password, user);
+		return true;
+	}
+	
 	public void tab() {
 		fieldSelection++;
 		if(fieldSelection > 1 && loginAllowed == false) {
 			fieldSelection = 0;
 		}
-		if(fieldSelection > 2) {
+		if(fieldSelection > 3) {
 			fieldSelection = 0;
 		}
 	}
@@ -133,6 +139,7 @@ public class Login {
 				if(loginAllowed == true) {
 					g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize, 4*gp.tileSize, gp.tileSize);
 				}
+				g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + 3*gp.tileSize, 4*gp.tileSize, gp.tileSize);
 				g2.setColor(Color.red);
 				switch(fieldSelection) {
 					case(usernameField):
@@ -149,6 +156,11 @@ public class Login {
 						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize, 4*gp.tileSize, gp.tileSize);
 						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize+1, (gp.maxScreenRow/2)*gp.tileSize + gp.tileSize+1, 4*gp.tileSize-2, gp.tileSize-2);
 						break;
+						
+					case(registry):
+						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + 3*gp.tileSize, 4*gp.tileSize, gp.tileSize);
+						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize+1, (gp.maxScreenRow/2)*gp.tileSize + 3*gp.tileSize+1,4*gp.tileSize-2, gp.tileSize-2);
+						break;
 				}
 				g2.setColor(Color.black);
 				String text = user;
@@ -158,6 +170,8 @@ public class Login {
 				g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
 				text = "Login";
 				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize + 2*gp.tileSize - gp.tileSize/4);
+				text = "Registry";
+				g2.drawString(text, (gp.maxScreenCol/2)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/2)*gp.tileSize + 4*gp.tileSize - gp.tileSize/4);
 				if(wrongImput == true) {
 					g2.setColor(Color.white);
 					text = "Eingaben stimmen nicht überien!";
@@ -198,6 +212,10 @@ public class Login {
 	
 	public int getLoginButton(){
 		return loginButton;
+	}
+	
+	public int getRegistryButton(){
+		return registry;
 	}
 	
 	public void setTitleScreenState(int x) {

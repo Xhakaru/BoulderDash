@@ -15,9 +15,9 @@ public class Database {
 	
 	public void connect(String sql) {
     	// Verbindungszeichenfolge erstellen
-        String url = "jdbc:mysql://192.168.178.47:3306/sys";
+        String url = "jdbc:mysql://192.168.178.47:3306/boulderdash-db";
         String user = "root";
-        String password = "boulderdash-mysql";
+        String password = "admin";
 
         // Verbindung herstellen
         try {
@@ -42,7 +42,7 @@ public class Database {
                 passwordDB = resultSet.getString("pw");
                 // Weitere Spalten entsprechend deiner Tabelle
 
-                System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Password: " + passwordDB);
+                //System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Password: " + passwordDB);
                 // Weitere Spalten ausgeben, falls vorhanden
             }
 
@@ -66,25 +66,29 @@ public class Database {
 		String SQL = "select * from users where username = " + '"' + nameOrMail + '"' + "OR mail = " +'"'+ nameOrMail +'"'+ " AND pw = " +'"'+ password+'"';
 		connect(SQL);
 		if(usernameDB != null || mailDB != null || passwordDB != null) {
-			if(usernameDB.equals(nameOrMail)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
+			if(usernameDB.equals(nameOrMail) && passwordDB.equals(password)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
 				System.out.println("Eingabe stimmt überein.");
+				disconnect();
 				return true;
 			}
 		}
 		System.out.println("Eingabe Stimmt nicht überein");
+		disconnect();
 		return false;
 	}
 	
-	public boolean regestrieren(String name, String mail, String password) {
+	public boolean registry(String name, String mail, String password) {
 		String SQL = "INSERT INTO users (username, mail, pw) values (" + name + ", " + mail + ", " + password;
 		String valuesCheck = "select * from users where username = " + '"' + name + '"' + "OR mail = " +'"'+ mail +'"'+ " AND pw = " +'"'+ password +'"';
 		connect(valuesCheck);
 		if(usernameDB != null || mailDB != null || passwordDB != null) {
 			connect(SQL);
 			System.out.println("Der Benutzer wurde erfolgreich angelegt.");
+			disconnect();
 			return true;
 		}
-		System.out.println("Der Benutzer existiert bereits!");					// ich habe noch keine Ahnug ob das geht.
+		System.out.println("Der Benutzer existiert bereits!");						//idk if this works xD
+		disconnect();
 		return false;
 	}
 }

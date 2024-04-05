@@ -1,5 +1,6 @@
 package main;
 
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -59,6 +60,11 @@ public class KeyHandler implements KeyListener{
 						if(gp.login.compareUserDB()) {
 							gp.gameState = gp.playState;
 						}
+					}
+				}
+				if(gp.login.getLoginAllowed() == true && gp.login.getFieldSelection() == gp.login.getRegistryButton()) {
+					if(code == KeyEvent.VK_ENTER) {
+						gp.login.registry();
 					}
 				}
 			}

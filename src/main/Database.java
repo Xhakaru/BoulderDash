@@ -2,6 +2,7 @@ package main;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,11 +11,11 @@ public class Database {
 	
 	private Connection connection;
 	private String usernameDB;
+	private String ingameUser;
 	private String mailDB;
 	private String passwordDB;
 	
 	public void connect(String sql) {
-    	// Verbindungszeichenfolge erstellen
         String url = "jdbc:mysql://192.168.178.47:3306/boulderdash-db";
         String user = "root";
         String password = "admin";
@@ -25,7 +26,6 @@ public class Database {
             System.out.println("Verbindung zur Datenbank hergestellt.");
 
             // Hier kannst du SQL-Abfragen ausführen
-            // Zum Beispiel:
             // Statement statement = connection.createStatement();
             // ResultSet resultSet = statement.executeQuery("SELECT * FROM deineTabelle");
 
@@ -43,7 +43,6 @@ public class Database {
                 // Weitere Spalten entsprechend deiner Tabelle
 
                 //System.out.println("ID: " + userid + ", Username: " + usernameDB + ", Email: " + mailDB + " Password: " + passwordDB);
-                // Weitere Spalten ausgeben, falls vorhanden
             }
 
         } catch (SQLException e) {
@@ -69,6 +68,7 @@ public class Database {
 			if(usernameDB.equals(nameOrMail) && passwordDB.equals(password)|| mailDB.equals(nameOrMail) && passwordDB.equals(password)) {
 				System.out.println("Eingabe stimmt überein.");
 				disconnect();
+				ingameUser = usernameDB;
 				return true;
 			}
 		}
@@ -77,18 +77,54 @@ public class Database {
 		return false;
 	}
 	
-	public boolean registry(String name, String mail, String password) {
-		String SQL = "INSERT INTO users (username, mail, pw) values (" + name + ", " + mail + ", " + password;
-		String valuesCheck = "select * from users where username = " + '"' + name + '"' + "OR mail = " +'"'+ mail +'"'+ " AND pw = " +'"'+ password +'"';
-		connect(valuesCheck);
-		if(usernameDB != null || mailDB != null || passwordDB != null) {
-			connect(SQL);
-			System.out.println("Der Benutzer wurde erfolgreich angelegt.");
-			disconnect();
-			return true;
-		}
-		System.out.println("Der Benutzer existiert bereits!");						//idk if this works xD
-		disconnect();
-		return false;
+	public boolean registry(String name, String password) {
+	    String valuesCheck = "SELECT * FROM users WHERE username = ? OR mail = ?";
+	    
+	    // Verbindung zur Datenbank herstellen
+	    connect(valuesCheck);
+
+	    try {
+	        // Überprüfen, ob der Benutzer bereits existiert
+	        PreparedStatement checkStatement = connection.prepareStatement(valuesCheck);
+	        checkStatement.setString(1, name);
+	        checkStatement.setString(2, name); // Assuming name is used for both username and mail
+	        ResultSet resultSet = checkStatement.executeQuery();
+	        
+	        if (resultSet.next()) {
+	            System.out.println("Der Benutzer existiert bereits!");
+	            return false;
+	        }
+
+	        // Benutzer registrieren
+	        String SQL = "INSERT INTO users (username, pw) VALUES (?, ?)";
+	        PreparedStatement statement = connection.prepareStatement(SQL);
+	        statement.setString(1, name);
+	        statement.setString(2, password);
+	        int rowsAffected = statement.executeUpdate();
+
+	        if (rowsAffected > 0) {
+	            System.out.println("Der Benutzer wurde erfolgreich angelegt.");
+	            return true;
+	        } else {
+	            System.out.println("Fehler beim Anlegen des Benutzers.");
+	            return false;
+	        }
+	    } catch (SQLException e) {
+	        System.err.println("Fehler beim Ausführen der Datenbankabfrage: " + e.getMessage());
+	        return false;
+	    } finally {
+	        // Verbindung trennen, unabhängig vom Erfolg oder Misserfolg der Operation
+	        disconnect();
+	    }
+	}
+
+	
+	public void test() {
+		String SQL = "INSERT INTO users (username, pw) values ('k', 'k');";
+		connect(SQL);
+	}
+		
+	public String getIngameUser() {
+		return ingameUser;
 	}
 }

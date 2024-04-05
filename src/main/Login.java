@@ -28,6 +28,7 @@ public class Login {
 	private final int passwordField = 1;
 	private final int loginButton = 2;
 	private final int registry = 3;
+	private final int mailField = 4;
 	private boolean loginAllowed;
 	
 	//Login
@@ -69,7 +70,7 @@ public class Login {
 	}
 	
 	public boolean registry() {
-		db.registry(user, password, user);
+		db.registry(user, password);
 		return true;
 	}
 	
@@ -105,6 +106,7 @@ public class Login {
 				}
 				break;
 		}
+		
 	}
 	
 	public void update() {
@@ -142,7 +144,7 @@ public class Login {
 				g2.fillRect((gp.maxScreenCol/2)*gp.tileSize - 2*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize + 3*gp.tileSize, 4*gp.tileSize, gp.tileSize);
 				g2.setColor(Color.red);
 				switch(fieldSelection) {
-					case(usernameField):
+					case(mailField):
 						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - 3*gp.tileSize, 10*gp.tileSize, gp.tileSize);
 						g2.drawRect((gp.maxScreenCol/2)*gp.tileSize - 5*gp.tileSize+1, (gp.maxScreenRow/2)*gp.tileSize - 3*gp.tileSize+1, 10*gp.tileSize-2, gp.tileSize-2);
 						break;
@@ -177,7 +179,7 @@ public class Login {
 					text = "Eingaben stimmen nicht überien!";
 					g2.drawString(text, (gp.maxScreenCol-19)*gp.tileSize - gp.tileSize + gp.tileSize/16, (gp.maxScreenRow/3)*gp.tileSize + 2*gp.tileSize - gp.tileSize/4);
 				}
-				break;
+			break;
 		}
 	}
 	

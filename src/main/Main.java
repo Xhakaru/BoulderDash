@@ -33,9 +33,6 @@ public class Main {
 
 		SoundHandler.loadSounds();
 		
-		//db.ueberpruefe("admin", "1234");
-		//db.disconnect();
-
 		gamePanel.startGameThread();
 
 	}

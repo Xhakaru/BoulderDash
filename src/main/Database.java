@@ -16,7 +16,7 @@ public class Database {
 	private String passwordDB;
 	
 	public void connect(String sql) {
-        String url = "jdbc:mysql://192.168.178.47:3306/boulderdash-db";
+        String url = "jdbc:mysql://192.168.178.47:3306/boulderdash_db";
         String user = "root";
         String password = "admin";
 
@@ -78,7 +78,7 @@ public class Database {
 	}
 	
 	public boolean registry(String name, String password) {
-	    String valuesCheck = "SELECT * FROM users WHERE username = ? OR mail = ?";
+	    String valuesCheck = "SELECT * FROM users WHERE username = "+ "'"+name+"'" + " OR mail = " + "'"+password+"'";
 	    
 	    // Verbindung zur Datenbank herstellen
 	    connect(valuesCheck);
@@ -87,16 +87,17 @@ public class Database {
 	        // Überprüfen, ob der Benutzer bereits existiert
 	        PreparedStatement checkStatement = connection.prepareStatement(valuesCheck);
 	        checkStatement.setString(1, name);
-	        checkStatement.setString(2, name); // Assuming name is used for both username and mail
+	        checkStatement.setString(2, name);
 	        ResultSet resultSet = checkStatement.executeQuery();
 	        
 	        if (resultSet.next()) {
 	            System.out.println("Der Benutzer existiert bereits!");
+	            disconnect(); // Verbindung trennen, da keine weitere Operation erforderlich ist
 	            return false;
 	        }
 
 	        // Benutzer registrieren
-	        String SQL = "INSERT INTO users (username, pw) VALUES (?, ?)";
+	        String SQL =  "INSERT INTO users (username, pw) values (" + "'"+name+"'" + ", " + "'"+password+"'" + ");";;
 	        PreparedStatement statement = connection.prepareStatement(SQL);
 	        statement.setString(1, name);
 	        statement.setString(2, password);
@@ -104,24 +105,17 @@ public class Database {
 
 	        if (rowsAffected > 0) {
 	            System.out.println("Der Benutzer wurde erfolgreich angelegt.");
-	            return true;
 	        } else {
 	            System.out.println("Fehler beim Anlegen des Benutzers.");
-	            return false;
 	        }
 	    } catch (SQLException e) {
 	        System.err.println("Fehler beim Ausführen der Datenbankabfrage: " + e.getMessage());
-	        return false;
 	    } finally {
 	        // Verbindung trennen, unabhängig vom Erfolg oder Misserfolg der Operation
 	        disconnect();
 	    }
-	}
 
-	
-	public void test() {
-		String SQL = "INSERT INTO users (username, pw) values ('k', 'k');";
-		connect(SQL);
+	    return false;
 	}
 		
 	public String getIngameUser() {

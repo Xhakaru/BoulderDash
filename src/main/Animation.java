@@ -343,7 +343,7 @@ public class Animation {
 			}
 			
 			if(endanimation == true) {
-				g2.drawImage(youwon, screenX, screenY, endScreenWidth, endScreenHeigth, null);
+				drawYouWon(g2);
 			}
 			
 			if(lebenZeroanimation == true) {
@@ -351,4 +351,17 @@ public class Animation {
 			}
 		}
 	}
+	
+	public void drawYouWon(Graphics2D g2) {
+		int randomNumX = gp.random.nextInt(gp.worldWidth);
+		int randomNumY = gp.random.nextInt(gp.worldHeight);
+		int r = gp.random.nextInt(255);
+		int g = gp.random.nextInt(255);
+		int b = gp.random.nextInt(255);
+		gp.ui.drawDarkerScreen(g2);
+		g2.drawImage(youwon, screenX, screenY, endScreenWidth, endScreenHeigth, null);
+		gp.ui.MIAU(g2, randomNumX, randomNumY, r, g, b);
+		gp.ui.NYANCAT(g2, gp.screenWidth/2 - 220, gp.screenHeight/2, r, g, b);
+	}
+	
 }

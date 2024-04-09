@@ -22,6 +22,7 @@ public class Interface {
 	public int col = 0;
 	Font ueberschrift = new Font("Arial", Font.PLAIN, 25);
 	Font menuUeberschrift = new Font("Arial", Font.PLAIN, 35);
+	Font MIAU = new Font("Arial", Font.PLAIN, 80);
 	Font text = new Font("Arial", Font.PLAIN, 15);
 	Color transparentBlack = new Color(0, 0, 0, (int) ((float) 0.85 * 255));
 	Color transparentGrey = new Color(0, 0, 0, (int) ((float) 0.50 * 255));
@@ -83,6 +84,11 @@ public class Interface {
 		}
 	}
 	
+	public void drawDarkerScreen(Graphics2D g2) {
+		g2.setColor(transparentDarkGrey);
+		g2.fillRoundRect(0, 0, gp.worldWidth, gp.worldHeight, 10, 10);
+	}
+	
 	public void drawStats(Graphics2D g2) {;
         g2.setColor(transparentBlack);
         AlphaComposite alphaComposite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) 0.85);
@@ -124,6 +130,19 @@ public class Interface {
 		g2.setColor(white);
 		g2.setFont(ueberschrift);
 		g2.drawString("Press ESC to close", 660, 380);
+	}
+	
+	public void MIAU(Graphics2D g2, int x, int y, int r, int g, int b) {
+		Color black = new Color(r, g, b);
+		g2.setColor(black);
+		g2.setFont(MIAU);
+		g2.drawString("MIAU", x, y);
+	}
+	public void NYANCAT(Graphics2D g2, int x, int y, int r, int g, int b) {
+		Color black = new Color(r, g, b);
+		g2.setColor(black);
+		g2.setFont(MIAU);
+		g2.drawString("NYAN CAT", x, y);
 	}
 	
 	public void draw(Graphics2D g2) {

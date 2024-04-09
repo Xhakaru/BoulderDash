@@ -1,11 +1,9 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -13,7 +11,7 @@ import main.GamePanel;
 import main.KeyHandler;
 import main.Sound;
 import main.SoundHandler;
-import tile.TileManager;
+
 
 public class Player extends Entity{
 	

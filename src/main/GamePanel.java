@@ -16,6 +16,7 @@ import entity.RubinManager;
 import entity.StoneManager;
 import tile.TileManager;
 import tile.Levelbord;
+import java.util.Random;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -57,10 +58,10 @@ public class GamePanel extends JPanel implements Runnable{
 	public Thread gameThread;
 	public Player player = new Player(this, keyH);
 	public CollisionChecker cChecker = new CollisionChecker(this);
-//	public Sound sound = new Sound();
 	public Interface ui = new Interface(this);
 	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
 	public Animation animation = new Animation(this);
+	public Random random = new Random();            						//random stuff like random int.
 	
 	public int threadRunTime = 0;
 	public int time = 0;
@@ -221,5 +222,10 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 		SoundHandler.updateVolume();
+	}
+	
+	public int getRandomNum() {
+		int randomNum = random.nextInt(50);
+		return randomNum;
 	}
 }

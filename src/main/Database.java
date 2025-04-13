@@ -62,6 +62,7 @@ public class Database {
 	}
 	
 	public boolean ueberpruefe(String nameOrMail, String password) {
+		/*
 		String SQL = "select * from users where username = " + '"' + nameOrMail + '"' + "OR mail = " +'"'+ nameOrMail +'"'+ " AND pw = " +'"'+ password+'"';
 		connect(SQL);
 		if(usernameDB != null || mailDB != null || passwordDB != null) {
@@ -74,7 +75,9 @@ public class Database {
 		}
 		System.out.println("Eingabe Stimmt nicht überein");
 		disconnect();
-		return false;
+		return true;
+		*/
+		return true;  //Wegen SQL injections auskommentiert
 	}
 	
 	public boolean registry(String name, String password) {

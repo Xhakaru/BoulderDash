@@ -272,10 +272,12 @@ public class Levelbord {
 	    int i = -str.length() - 2;
 	    for (int k : rubineArray) {
 	    	if(rubineGesammelt == false) {
-	    		tileScreened[gp.maxScreenCol + i] = tileBord[k];
+	    		//tileScreened[gp.maxScreenCol + i] = tileBord[k];
+	    		tileScreened[40 + i] = tileBord[k];
 	    	}
 	    	else {
-	    		tileScreened[gp.maxScreenCol + i] = tileBord[k + 30];
+	    		//tileScreened[gp.maxScreenCol + i] = tileBord[k + 30];
+	    		tileScreened[40 + i] = tileBord[k + 30];
 	    	}
 	    	i++;
 	    }
@@ -488,43 +490,43 @@ public class Levelbord {
 	
 	public void herzSprite() {
 		if(spriteNum == 1) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f1;
 		}
 		if(spriteNum == 2) {
 			tileBord[12].image = herz_f2;
 		}
 		if(spriteNum == 3) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f3;
 		}
 		if(spriteNum == 4) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f1;
 		}
 		if(spriteNum == 5) {
 			tileBord[12].image = herz_f2;
 		}
 		if(spriteNum == 6) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f3;
 		}
 		if(spriteNum == 7) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f1;
 		}
 		if(spriteNum == 8) {
 			tileBord[12].image = herz_f2;
 		}
 		if(spriteNum == 9) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f3;
 		}
 		if(spriteNum == 10) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f1;
 		}
 		if(spriteNum == 11) {
 			tileBord[12].image = herz_f2;
 		}
 		if(spriteNum == 12) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f3;
 		}
 		if(spriteNum == 13) {
-			tileBord[12].image = herz_f2;
+			tileBord[12].image = herz_f1;
 		}
 		if(spriteNum == 14) {
 			tileBord[12].image = herz_f2;
@@ -532,90 +534,92 @@ public class Levelbord {
 	}
 	
 	public void exclamationMarkSprite() {
-		if(spriteNum == 1) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 2) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 3) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 4) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 5) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 6) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 7) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 8) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 9) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 10) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 11) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 12) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
-		if(spriteNum == 13) {
-			tileBord[13].image = exclamation_mark_r_f1;
-			tileBord[14].image = exclamation_mark_l_f1;
-			tileBord[50].image = exclamation_mark_r_f1_white;
-			tileBord[51].image = exclamation_mark_l_f1_white;
-		}
-		if(spriteNum == 14) {
-			tileBord[13].image = exclamation_mark_r_f2;
-			tileBord[14].image = exclamation_mark_l_f2;
-			tileBord[50].image = exclamation_mark_r_f2_white;
-			tileBord[51].image = exclamation_mark_l_f2_white;
-		}
+		switch(spriteNum) {
+			case(1):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(2):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(3):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(4):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(5):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(6):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(7):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(8):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(9):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(10):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(11):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(12):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+			case(13):
+				tileBord[13].image = exclamation_mark_r_f1;
+				tileBord[14].image = exclamation_mark_l_f1;
+				tileBord[50].image = exclamation_mark_r_f1_white;
+				tileBord[51].image = exclamation_mark_l_f1_white;
+				break;
+			case(14):
+				tileBord[13].image = exclamation_mark_r_f2;
+				tileBord[14].image = exclamation_mark_l_f2;
+				tileBord[50].image = exclamation_mark_r_f2_white;
+				tileBord[51].image = exclamation_mark_l_f2_white;
+				break;
+		}	
 	}
 	
 	public void update() {
@@ -693,7 +697,7 @@ public class Levelbord {
 			
 			bordCol++;
 		}
-//		g2.drawImage(gp.tileM.tile[1].image, (gp.maxScreenCol-2) * gp.tileSize, 0, gp.tileSize, gp.tileSize, null);
+		//g2.drawImage(gp.tileM.tile[1].image, (gp.maxScreenCol-2) * gp.tileSize, 0, gp.tileSize, gp.tileSize, null);
 		
 	}
 }

@@ -18,10 +18,8 @@ public class Main {
                 System.exit(0);             }
         });
 		
-		window.setResizable(false);
+		window.setResizable(true);
 		window.setTitle("Boulder Dash");
-		
-		Database db = new Database();
 		
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel);

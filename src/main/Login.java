@@ -129,7 +129,10 @@ public class Login {
 	public void draw(Graphics2D g2) {
 		switch(titleScreenState) {
 			case(titleState):
-				g2.drawImage(logo, (gp.maxScreenCol/2)*gp.tileSize - 3*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - 3*gp.tileSize, 6*gp.tileSize, 6*gp.tileSize, null);
+				//g2.drawImage(logo, (gp.maxScreenCol/2)*gp.tileSize - 3*gp.tileSize, (gp.maxScreenRow/2)*gp.tileSize - 3*gp.tileSize, 6*gp.tileSize, 6*gp.tileSize, null);
+				gp.dynamicResolution();
+				g2.drawImage(logo, (gp.worldWidth/2)-128, (gp.worldHeight/2)-128,null);
+				System.out.println();
 				break;
 			
 			case(loginState):

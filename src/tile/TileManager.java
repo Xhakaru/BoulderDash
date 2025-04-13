@@ -1,5 +1,6 @@
 package tile;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -57,14 +58,14 @@ public class TileManager {
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		
-		tile = new Tile[10];
+		tile = new Tile[11];
 		mapTileNum = new int [gp.maxWorldCol][gp.maxWorldRow];
 		
 		setFallingColFalse();
 		
 		getTileImage();
 		switch(gp.welt) {
-			case(3):
+			case(99):
 				loadMap("/maps/world03.txt");
 				break;
 			case(4):
@@ -73,6 +74,8 @@ public class TileManager {
 			case(5):
 				loadMap("/maps/world05.txt");
 				break;
+			case(3):
+				loadMap("/maps/TestMap.txt");
 		}
 		
 		chunkBorders();
@@ -137,6 +140,9 @@ public class TileManager {
 			tile[9] = new Tile();
 			tile[9].image = ImageIO.read(getClass().getResourceAsStream("/tiles/dirt_gray_dark.png"));
 			
+			tile[10] = new Tile();
+			tile[10].image = ImageIO.read(getClass().getResourceAsStream("/tiles/black.png"));
+			
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -149,48 +155,48 @@ public class TileManager {
 		gp.rubinM.setDefault();
 		
 		try {
-			InputStream is = getClass().getResourceAsStream(map);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			
-			int col = 0;
-			int row = 0;
-			
-			while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
-				
-				String line = br.readLine();
-				
-				while(col < gp.maxWorldCol) {
-					
-					String numbers[] = line.split(" ");
-					
-					int num = Integer.parseInt(numbers[col]);
-					
-					if(num == stoneID) {
-						gp.stoneM.addStoneToStoneList(col * gp.tileSize, row * gp.tileSize);
-					}
-					
-					if(num == rubinID) {
-						gp.rubinM.addRubinToRubinList(col * gp.tileSize, row * gp.tileSize);
-					}
-					
-					if(num == 9) {
-						gp.enemyWL.spawnEnemyWithLoot(col, row);
-						num = 5;
-					}
-					
-					mapTileNum[col][row] = num;
-					col++;
-				}
-				if(col == gp.maxWorldCol) {
-					col = 0;
-					row++;
-				}
-			}
-			br.close();
+		    InputStream is = getClass().getResourceAsStream(map);
+		    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+		    for (int row = 0; row < gp.maxWorldRow; row++) {
+		        String line = br.readLine();
+		        if (line == null) break;
+
+		        String[] numbers = line.split(" ");
+
+		        for (int col = 0; col < gp.maxWorldCol; col++) {
+		            int num;
+
+		            if (col < numbers.length) {
+		                num = Integer.parseInt(numbers[col]);
+		            } else {
+		                // Füllt mit 10 auf, wenn zu wenige Spalten vorhanden sind
+		                num = 10;
+		            }
+
+		            if (num == stoneID) {
+		                gp.stoneM.addStoneToStoneList(col * gp.tileSize, row * gp.tileSize);
+		            }
+
+		            if (num == rubinID) {
+		                gp.rubinM.addRubinToRubinList(col * gp.tileSize, row * gp.tileSize);
+		            }
+
+		            if (num == 9) {
+		                gp.enemyWL.spawnEnemyWithLoot(col, row);
+		                num = 5;
+		            }
+
+		            mapTileNum[col][row] = num;
+		        }
+		    }
+
+		    br.close();
+		} catch (Exception e) {
+		    e.printStackTrace(); // Zeigt dir den Fehler
 		}
-		catch(Exception e){
-			
-		}
+
+
 	}
 	
 	public void eaten(int worldX, int worldY) {
@@ -707,7 +713,6 @@ public class TileManager {
 			if(tileNum == 7) {
 				startExplosion = true;
 			}
-			
 //			rubinFallCounter++;
 //			if(rubinFallCounter > 18 && gp.animationPause == false) {
 //				rubinFall(worldCol, worldRow);

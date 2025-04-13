@@ -24,17 +24,18 @@ public class GamePanel extends JPanel implements Runnable{
 	final int originalTileSize = 16; // 16x16 tile
 	final int scale = 3;
 	
-	public final int tileSize = originalTileSize * scale; // 48x48 tile
+	public int tileSize = originalTileSize * scale; // 48x48 tile
 	public final int maxScreenCol = 30;
 	public final int maxScreenRow = 17;
 	public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
 	public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 	
 	// WORLD SETTINGS
-	public final int maxWorldCol = 40;
-	public final int maxWorldRow = 23;
-	public final int worldWidth = tileSize * maxWorldCol;
-	public final int worldHeight = tileSize * maxWorldRow;
+	public final int maxWorldCol = 250;
+	public final int maxWorldRow = 125;
+  	public  int worldWidth = 1920;    //kein final wegen dynamicResolution
+	public  int worldHeight = 1080;   //kein final wegen dynamicResolution
+	public int tilePerWorldwidth = 40; // 40 default, 60 (werte in 4er schritten verändern)
 	
 	// FPS
 	int FPS = 60;
@@ -47,7 +48,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	//Standard World
 	public int welt = 3;
-	
+
 	public Login login = new Login(this);
 	public StoneManager stoneM = new StoneManager(this);
 	public RubinManager rubinM = new RubinManager(this);
@@ -60,16 +61,18 @@ public class GamePanel extends JPanel implements Runnable{
 	public CollisionChecker cChecker = new CollisionChecker(this);
 	public Interface ui = new Interface(this);
 	public EnemyNoLoot enemyNL = new EnemyNoLoot(this);
+
 	public Animation animation = new Animation(this);
 	public Random random = new Random();            						//random stuff like random int.
 	
 	public int threadRunTime = 0;
 	public int time = 0;
+	
 	public boolean animationPause = false;
 	
 	public GamePanel() {
 		
-		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+		this.setPreferredSize(new Dimension(1920, 1080));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
@@ -86,6 +89,14 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		playSE("startup");
 		playMusic("blue-boy-adventure");
+	}
+	
+	public void dynamicResolution() {
+		Dimension size = getSize();
+		worldWidth = size.width;
+		worldHeight = size.height;
+		tileSize = worldWidth / tilePerWorldwidth;
+		System.out.println("Szize: " + worldWidth + " " + worldHeight + " " + tileSize); //Nur für testzwecke!
 	}
 
 	
@@ -135,6 +146,7 @@ public class GamePanel extends JPanel implements Runnable{
 					levelB.update();
 					enemyNL.update();
 					enemyWL.update();
+					dynamicResolution();
 				}
 				else {
 					animation.update();

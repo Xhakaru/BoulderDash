@@ -111,7 +111,7 @@ public class Stone extends Entity{
 		int rowP = gp.player.worldY / gp.tileSize;
 		int col = worldX / gp.tileSize;
 		int row = worldY / gp.tileSize;
-		
+	
 		//Spieler unter Stein?
 		boolean playerUnderStone;
 		if(colP == col && rowP == row + 1) {
@@ -198,7 +198,7 @@ public class Stone extends Entity{
 	
 	public void update() {
 		screenXY();
-		stoneFall();
+		//stoneFall();
 	}
 	
 }

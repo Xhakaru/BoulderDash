@@ -22,21 +22,21 @@ public class GamePanel extends JPanel implements Runnable{
 
 	// SCREEN SETTINGS
 	final int originalTileSize = 16; // 16x16 tile
-	final int scale = 3;
 	
-	public int tileSize = originalTileSize * scale; // 48x48 tile
 	public final int maxScreenCol = 30;
 	public final int maxScreenRow = 17;
+
+	// WORLD SETTINGS
+	public  int worldWidth = 1920;    //kein final wegen dynamicResolution
+	public  int worldHeight = 1080;
+	public int tilePerWorldwidth = 40; // oder dynamisch anpassen je nach Fenstergröße
+	public int tileSize = worldWidth / tilePerWorldwidth;
 	public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
 	public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
-	
-	// WORLD SETTINGS
 	public final int maxWorldCol = 250;
 	public final int maxWorldRow = 125;
-  	public  int worldWidth = 1920;    //kein final wegen dynamicResolution
-	public  int worldHeight = 1080;   //kein final wegen dynamicResolution
-	public int tilePerWorldwidth = 40; // 40 default, 60 (werte in 4er schritten verändern)
-	
+	// 40 default, 60 (werte in 4er schritten verändern)
+
 	// FPS
 	int FPS = 60;
 	
@@ -64,7 +64,9 @@ public class GamePanel extends JPanel implements Runnable{
 
 	public Animation animation = new Animation(this);
 	public Random random = new Random();            						//random stuff like random int.
-	
+
+	private Camera camera;
+
 	public int threadRunTime = 0;
 	public int time = 0;
 	
@@ -77,6 +79,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+		this.camera = new Camera(worldWidth, worldHeight, screenWidth, screenHeight);
 	}
 	
 	public void startGameThread() {
@@ -88,15 +91,15 @@ public class GamePanel extends JPanel implements Runnable{
 		gameState = titleState;
 		
 		playSE("startup");
-		playMusic("blue-boy-adventure");
+		playMusic("MainOST");
 	}
 	
 	public void dynamicResolution() {
-		Dimension size = getSize();
+		Dimension size = getSize();  //size = aktuelle groesse des fensters
 		worldWidth = size.width;
 		worldHeight = size.height;
 		tileSize = worldWidth / tilePerWorldwidth;
-		System.out.println("Szize: " + worldWidth + " " + worldHeight + " " + tileSize); //Nur für testzwecke!
+		//System.out.println("Szize: " + worldWidth + " " + worldHeight + " " + tileSize); //Nur für testzwecke!
 	}
 
 	
@@ -130,68 +133,71 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	
 	public void update() {
-		
+		gameState = playState; // for skipping the login
 		switch(gameState) {
 			case(titleState):
 				login.update();
 				break;
-			
+
 			case(playState):
 				if(!animationPause) {
+					dynamicResolution();
 					setVolume();
 					player.update();
+
+					// Kamera aktualisieren
+					camera.update(player);
+
 					tileM.update();
 					stoneM.update();
 					rubinM.update();
 					levelB.update();
 					enemyNL.update();
 					enemyWL.update();
-					dynamicResolution();
 				}
 				else {
 					animation.update();
 				}
 				break;
-			
+
 			case(pauseState):
-				
 				break;
 		}
 	}
 	
 	public void paintComponent(Graphics g) {
-		
+
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D)g;
-		
+		Graphics2D g2 = (Graphics2D) g;
+
 		switch(gameState) {
 			case(titleState):
 				login.draw(g2);
 				break;
-			
+
 			case(playState):
-				
+				// Den Bereich basierend auf der Kamera verschieben
+				g2.translate(-camera.getX(), -camera.getY());
+
 				tileM.draw(g2);
 				stoneM.draw(g2);
 				rubinM.draw(g2);
-				
+
 				if(!animationPause) {
 					player.draw(g2);
 				}
-				
+
 				enemyNL.draw(g2);
 				enemyWL.draw(g2);
 				levelB.draw(g2);
 				ui.draw(g2);
 				animation.draw(g2);
 				break;
-				
+
 			case(pauseState):
-				
 				break;
-			
 		}
-		
+
 		g2.dispose();
 	}
 	
@@ -207,10 +213,10 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	public void playSE(String name){
 		Sound sound = SoundHandler.getSound(name);
-		sound.setVolume(0.5f);
-		if(name.equals("win-nt-shutdown")) {
-			sound.setVolume(0.3f);
-		}
+		if(sound == null) return;
+
+		sound.stop(); // wichtig: vorher stoppen
+		sound.setVolume(name.equals("win-nt-shutdown") ? 0.3f : 0.5f);
 		sound.play();
 	}
 	

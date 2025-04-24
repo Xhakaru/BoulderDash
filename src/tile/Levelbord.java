@@ -272,19 +272,19 @@ public class Levelbord {
 	    int i = -str.length() - 2;
 	    for (int k : rubineArray) {
 	    	if(rubineGesammelt == false) {
-	    		//tileScreened[gp.maxScreenCol + i] = tileBord[k];
-	    		tileScreened[40 + i] = tileBord[k];
+	    		tileScreened[gp.tilePerWorldwidth + i] = tileBord[k];
+	    		//tileScreened[40 + i] = tileBord[k];
 	    	}
 	    	else {
 	    		//tileScreened[gp.maxScreenCol + i] = tileBord[k + 30];
-	    		tileScreened[40 + i] = tileBord[k + 30];
+	    		tileScreened[40 + i]  = tileBord[k + 30];
 	    	}
 	    	i++;
 	    }
 	}
 	
 	public void updateTileBordTime() {
-		int halfPanel = Math.round( gp.maxScreenCol / 2 );
+		int halfPanel = Math.round( gp.tilePerWorldwidth / 2 );
 		if(rubineGesammelt == false) {
 			tileScreened[halfPanel + 1] = tileBord[11];
 		}
@@ -317,40 +317,40 @@ public class Levelbord {
 	    	int i = -str.length() - halfPanel + 1;
 	    	for (int k : zeitArray) {
 	    		if(rubineGesammelt == false) {
-	    			tileScreened[gp.maxScreenCol + i] = tileBord[k];
+	    			tileScreened[gp.tilePerWorldwidth + i] = tileBord[k];
 	    		}
 	    		else {
-	    			tileScreened[gp.maxScreenCol + i] = tileBord[k + 30];
+	    			tileScreened[gp.tilePerWorldwidth + i] = tileBord[k + 30];
 	    		}
 	    		i++;
 	    	}
 		}
-		else if(anzahlZeit <= redTime && anzahlZeit >= 0){
+		else if(anzahlZeit >= 0){
 			int colorChange = 0;
+			halfPanel = Math.round( gp.tilePerWorldwidth / 2 );
 			if(anzahlZeit % 2 == 1) {
-				colorChange = 0;
-				if(rubineGesammelt == false) {
-					tileScreened[gp.maxScreenCol - halfPanel + 1] = tileBord[11];
-					tileScreened[gp.maxScreenCol - halfPanel - 2] = tileBord[0];
-					tileScreened[gp.maxScreenCol - halfPanel - 1] = tileBord[0];
+                if(!rubineGesammelt) {
+					tileScreened[halfPanel + 1] = tileBord[11];
+					tileScreened[halfPanel - 2] = tileBord[0];
+					tileScreened[halfPanel - 1] = tileBord[0];
 				}
 				else {
-					tileScreened[gp.maxScreenCol - halfPanel + 1] = tileBord[16];
-					tileScreened[gp.maxScreenCol - halfPanel - 2] = tileBord[30];
-					tileScreened[gp.maxScreenCol - halfPanel - 1] = tileBord[30];
+					tileScreened[halfPanel + 1] = tileBord[16];
+					tileScreened[halfPanel - 2] = tileBord[30];
+					tileScreened[halfPanel - 1] = tileBord[30];
 				}
 			}
 			else {
 				colorChange = 20;
 				if(rubineGesammelt == false) {
-					tileScreened[gp.maxScreenCol - halfPanel + 1] = tileBord[15];
-					tileScreened[gp.maxScreenCol - halfPanel - 2] = tileBord[20];
-					tileScreened[gp.maxScreenCol - halfPanel - 1] = tileBord[20];
+					tileScreened[halfPanel + 1] = tileBord[15];
+					tileScreened[halfPanel - 2] = tileBord[20];
+					tileScreened[halfPanel - 1] = tileBord[20];
 				}
 				else {
-					tileScreened[gp.maxScreenCol - halfPanel + 1] = tileBord[18];
-					tileScreened[gp.maxScreenCol - halfPanel - 2] = tileBord[40];
-					tileScreened[gp.maxScreenCol - halfPanel - 1] = tileBord[40];
+					tileScreened[halfPanel + 1] = tileBord[18];
+					tileScreened[halfPanel - 2] = tileBord[40];
+					tileScreened[halfPanel - 1] = tileBord[40];
 				}
 			}
 			
@@ -687,10 +687,10 @@ public class Levelbord {
 		while(bordCol < gp.maxScreenCol) {
 			
 			if(rubineGesammelt == false) {
-				g2.drawImage(tileBord[10].image, bordCol * gp.tileSize, 0, gp.tileSize, gp.tileSize, null);
+				g2.drawImage(tileBord[10].image, bordCol * gp.tileSize, 0, gp.worldWidth, gp.tileSize, null);
 			}
 			else {
-				g2.drawImage(tileBord[17].image, bordCol * gp.tileSize, 0, gp.tileSize, gp.tileSize, null);
+				g2.drawImage(tileBord[17].image, bordCol * gp.tileSize, 0, gp.worldWidth, gp.tileSize, null);
 			}
 			g2.drawImage(tileScreened[bordCol].image, bordCol * gp.tileSize, 0, gp.tileSize, gp.tileSize, null);
 			

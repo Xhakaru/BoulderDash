@@ -37,11 +37,16 @@ public class TileManager {
 	
 	//TILE IDs
 	public static int dirtID = 0;
-	public static int rubinID = 1;
-	public static int borderID = 2;
-	public static int brickID = 3;
-	public static int stoneID = 4;
-	public static int backBlackID = 5;
+    public static int rubinID = 1;
+    public static int borderID = 2;
+    public static int brickID = 3;
+    public static int stoneID = 4;
+    public static int backBlackID = 5;
+    public static int openedFinishID = 6;
+    public static int explosionID = 7;
+    public static int closedFinishID = 8;
+    public static int spawnEWLID = 9; //EWL = enemy with loot
+	public static int blackID = 10;
 	
 	//Kamerafahrt
 	public boolean counterXkameraPos, counterYkameraPos;
@@ -170,8 +175,8 @@ public class TileManager {
 		            if (col < numbers.length) {
 		                num = Integer.parseInt(numbers[col]);
 		            } else {
-		                // Füllt mit 10 auf, wenn zu wenige Spalten vorhanden sind
-		                num = 10;
+		                // Füllt mit blackTile(10) auf, wenn zu wenige Spalten vorhanden sind
+		                num = blackID;
 		            }
 
 		            if (num == stoneID) {
@@ -193,7 +198,7 @@ public class TileManager {
 
 		    br.close();
 		} catch (Exception e) {
-		    e.printStackTrace(); // Zeigt dir den Fehler
+		    e.printStackTrace(); // Zeigt dir den Fehlen
 		}
 
 
@@ -702,14 +707,14 @@ public class TileManager {
 	
 	//Chunk-Kamera
 	public void draw(Graphics2D g2) {
-		
+
 		int worldCol = 0;
 		int worldRow = 0;
-		
+
 		while(worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
-			
+
 			int tileNum = mapTileNum[worldCol][worldRow];
-			
+
 			if(tileNum == 7) {
 				startExplosion = true;
 			}
@@ -718,31 +723,31 @@ public class TileManager {
 //				rubinFall(worldCol, worldRow);
 //				rubinFallCounter = 0;
 //			}
-			
+
 			int worldX = worldCol * gp.tileSize;
 			int worldY = worldRow * gp.tileSize;
-			int screenX = 0;
-			int screenY = 0;
-			
+			int screenX;
+			int screenY;
+
 			if(counterXkameraPos == true) {
 				screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize + actualXkameraMovement;
 			}
 			else {
 				screenX = worldX - chunks[playerChunkY][playerChunkX].sbLeft * gp.tileSize - actualXkameraMovement;
 			}
-			
+
 			if(counterYkameraPos == true) {
 				screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize + actualYkameraMovement;
 			}
 			else {
 				screenY = worldY - chunks[playerChunkY][playerChunkX].sbUp * gp.tileSize - actualYkameraMovement;
 			}
-			
+
 			g2.drawImage(tile[tileNum].image, screenX, screenY + gp.tileSize, gp.tileSize, gp.tileSize, null);
-			
-			
+
+
 			worldCol++;
-			
+
 			if(worldCol == gp.maxWorldCol) {
 				worldCol = 0;
 				worldRow++;

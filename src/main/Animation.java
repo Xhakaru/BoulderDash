@@ -3,6 +3,7 @@ package main;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -16,7 +17,7 @@ public class Animation {
 	public boolean endanimation = false;
 	public boolean lebenZeroanimation = false;
 	private boolean deathanimation = false;
-	private int screenX, screenY, screenXb, screenYb, endScreenWidth, endScreenHeigth, lebenZeroScreenWidth, lebenZeroScreenHeigth;
+	private int screenX, screenY, screenXb, screenYb, endScreenWidth, endScreenHeigth, lebenZeroScreenWidth, lebenZeroScreenHeigth;;
 	public int counter = 0;
 	private boolean tp = false;
 	private String grund;
@@ -82,8 +83,8 @@ public class Animation {
 		endScreenHeigth = 8 * gp.tileSize;
 		lebenZeroScreenWidth = 16 * gp.tileSize;
 		lebenZeroScreenHeigth = 8 * gp.tileSize;
-		screenX = (gp.maxScreenCol * gp.tileSize) / 2 - endScreenWidth / 2;
-		screenY = (gp.maxScreenRow * gp.tileSize) / 2 - endScreenHeigth / 2;
+		screenX = (gp.tilePerWorldwidth * gp.tileSize) / 2 - endScreenWidth / 2;
+		screenY = (gp.tilePerWorldwidth * gp.tileSize) / 2 - endScreenHeigth / 2;
 	}
 	
 	public void explosionSprite() {
@@ -241,7 +242,7 @@ public class Animation {
 			}
 		}
 		
-		if(endanimation == true) {
+		if(endanimation) {
 			if(40 < counter  && counter < 56) {
 				endScreenWidth = endScreenWidth - (counter - 40) * 2;
 				endScreenHeigth = endScreenHeigth - (counter - 40);
@@ -250,7 +251,7 @@ public class Animation {
 			}
 		}
 		
-		if(lebenZeroanimation == true) {
+		if(lebenZeroanimation) {
 			if(40 < counter  && counter < 56) {
 				lebenZeroScreenWidth = lebenZeroScreenWidth - (counter - 40) * 2;
 				lebenZeroScreenHeigth = lebenZeroScreenHeigth - (counter - 40);
@@ -269,16 +270,16 @@ public class Animation {
 	
 	public void draw(Graphics2D g2) {
 		if(gp.animationPause) {
-			if(deathanimation == true) {
-				if(direction == "null") {
-					if(gp.tileM.counterXkameraPos == true) {
+			if(deathanimation) {
+				if(Objects.equals(direction, "null")) {
+					if(gp.tileM.counterXkameraPos) {
 						gp.player.screenX += gp.tileM.actualXkameraMovement;
 					}
 					else {
 						gp.player.screenX -= gp.tileM.actualXkameraMovement;
 					}
 					
-					if(gp.tileM.counterYkameraPos == true) {
+					if(gp.tileM.counterYkameraPos) {
 						gp.player.screenY += gp.tileM.actualYkameraMovement;
 					}
 					else {
@@ -293,14 +294,14 @@ public class Animation {
 					g2.drawImage(explosion, gp.player.screenX + gp.tileSize, gp.player.screenY, gp.tileSize, gp.tileSize, null);
 					g2.drawImage(explosion, gp.player.screenX + gp.tileSize, gp.player.screenY - gp.tileSize, gp.tileSize, gp.tileSize, null);
 					g2.drawImage(explosion, gp.player.screenX + gp.tileSize, gp.player.screenY + gp.tileSize, gp.tileSize, gp.tileSize, null);
-					if(gp.tileM.counterXkameraPos == true) {
+					if(gp.tileM.counterXkameraPos) {
 						gp.player.screenX -= gp.tileM.actualXkameraMovement;
 					}
 					else {
 						gp.player.screenX += gp.tileM.actualXkameraMovement;
 					}
 					
-					if(gp.tileM.counterYkameraPos == true) {
+					if(gp.tileM.counterYkameraPos) {
 						gp.player.screenY -= gp.tileM.actualYkameraMovement;
 					}
 					else {
@@ -342,11 +343,11 @@ public class Animation {
 				}
 			}
 			
-			if(endanimation == true) {
+			if(endanimation) {
 				drawYouWon(g2);
 			}
 			
-			if(lebenZeroanimation == true) {
+			if(lebenZeroanimation) {
 				g2.drawImage(youlose, screenX, screenY, lebenZeroScreenWidth, lebenZeroScreenHeigth, null);
 			}
 		}
@@ -355,13 +356,15 @@ public class Animation {
 	public void drawYouWon(Graphics2D g2) {
 		int randomNumX = gp.random.nextInt(gp.worldWidth);
 		int randomNumY = gp.random.nextInt(gp.worldHeight);
+		int halfScreen = gp.worldWidth / 2;
 		int r = gp.random.nextInt(255);
 		int g = gp.random.nextInt(255);
 		int b = gp.random.nextInt(255);
 		gp.ui.drawDarkerScreen(g2);
 		g2.drawImage(youwon, screenX, screenY, endScreenWidth, endScreenHeigth, null);
+		System.out.println(screenX);
 		gp.ui.MIAU(g2, randomNumX, randomNumY, r, g, b);
-		gp.ui.NYANCAT(g2, gp.screenWidth/2 - 220, gp.screenHeight/2, r, g, b);
+		gp.ui.NYANCAT(g2, gp.worldWidth/2 - 220, gp.screenHeight/2, r, g, b);
 	}
 	
 }

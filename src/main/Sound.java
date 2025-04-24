@@ -19,14 +19,19 @@ public class Sound {
 		soundURL = resource;
 	}
 
-	public void play() {
+	public void play(){
 		load();
+		if (clip.isRunning()) {
+			clip.stop();
+			clip.setFramePosition(0);
+		}
 		setVolume();
 		if (looping) {
 			clip.loop(Clip.LOOP_CONTINUOUSLY);
-			return;
+		} else {
+			clip.start();
 		}
-		clip.start();
+
 	}
 
 	private void setVolume() {

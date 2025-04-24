@@ -20,10 +20,11 @@ public class Player extends Entity{
 	
 	public int screenX;
 	public int screenY;
+	public int playerX;
+	public int playerY;
 	public int rubinCounter;
 	public int leben = 3;
 	public int varX = 0;
-	public int varY = 0;
 	private int[] worldSpawnX = {8, 8, 3, 18, 1};
 	private int[] worldSpawnY = {6, 6, 2, 19, 1};
 	
@@ -33,22 +34,28 @@ public class Player extends Entity{
 		
 		this.gp = gp;
 		this.keyH = keyH;
-		
+
 		solidArea = new Rectangle();
 		solidArea.x = 0;
 		solidArea.y = 0;
 		solidArea.width = 0;
 		solidArea.height = 0;
-		
-		
+
 		setDefaultValues(gp.welt);
 		getPlayerImage();
 	}
-	
+
+	public void updatePos(int welt){
+		screenX = gp.worldWidth/2;
+		screenY = gp.worldHeight/2;
+		speed = gp.tileSize;
+		System.out.println(screenX + " " + screenY);
+	}
+
 	public void setDefaultValues(int welt) {
-		
-		screenX = gp.screenWidth/2;
-		screenY = gp.screenHeight/2;
+
+		screenX = gp.worldWidth/2;
+		screenY = gp.worldHeight/2;
 		worldX = gp.tileSize * worldSpawnX[welt-1];
 		worldY = gp.tileSize * worldSpawnY[welt-1];
 		speed = gp.tileSize;
@@ -178,6 +185,8 @@ public class Player extends Entity{
 	
 	public void sterben(String grund, int col, int row, String direction) {
 		gp.animation.startDeathanimation(grund, col, row, direction);
+		gp.playSE("Death");
+		leben--;
 	}
 	
 	public void sterben2(String grund) {
@@ -202,10 +211,12 @@ public class Player extends Entity{
 		System.out.println("Verbleibende Leben: " + leben);
 		
 		if(leben == 0) {
+      		sterben("youLost", 0, 0, null);
 			gp.welt = 3;
 			leben = 3;
 			System.out.println("Du bist mit deinen neuen Leben im ersten Level neu gespawnt.");
 		}
+		//leben --;
 		
 		gp.enemyWL.clearEnemyWithLoot();
 		switch(gp.welt) {
@@ -234,24 +245,21 @@ public class Player extends Entity{
 			sterben("Retry", 0, 0, "null");
 		}
 		
-		if(keyH.upPressed == true || 
-		   keyH.downPressed == true || 
-		   keyH.leftPressed == true || 
-		   keyH.rightPressed == true) {
+		if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
 			
-			if(keyH.upPressed == true) {
+			if(keyH.upPressed) {
 				keyH.upPressed = false;
 				direction = "up";
 				Ydirection = "up";
-			} else if(keyH.downPressed == true) {
+			} else if(keyH.downPressed) {
 				keyH.downPressed = false;
 				direction = "down";
 				Ydirection = "down";
-			} else if(keyH.leftPressed == true) {
+			} else if(keyH.leftPressed) {
 				keyH.leftPressed = false;
 				direction = "left";
 				Xdirection = "left";
-			} else if(keyH.rightPressed == true) {
+			} else {
 				keyH.rightPressed = false;
 				direction = "right";
 				Xdirection = "right";
@@ -306,12 +314,10 @@ public class Player extends Entity{
 				case "left":
 					varX = -gp.tileSize;
 					gp.stoneM.stonePush(worldX, worldY, varX);
-					System.out.println("leftEaten");
 			        break;
 				case "right":
 					varX = gp.tileSize;
 					gp.stoneM.stonePush(worldX, worldY, varX);
-					System.out.println("rightEaten");
 			        break;
 				}
 			}
@@ -443,24 +449,31 @@ public class Player extends Entity{
 			}
 		}
 	}
-	
+
 	public void draw(Graphics2D g2) {
-		
-		if(gp.tileM.counterXkameraPos == true) {
-			screenX += gp.tileM.actualXkameraMovement;
-		}
-		else {
-			screenX -= gp.tileM.actualXkameraMovement;
-		}
-		
-		if(gp.tileM.counterYkameraPos == true) {
-			screenY += gp.tileM.actualYkameraMovement;
-		}
-		else {
-			screenY -= gp.tileM.actualYkameraMovement;
-		}
-		
+
+//		if(gp.tileM.counterXkameraPos) {                           //Old camera
+//			screenX += gp.tileM.actualXkameraMovement;
+//		}
+//		else {
+//			screenX -= gp.tileM.actualXkameraMovement;
+//		}
+//
+//		if(gp.tileM.counterYkameraPos) {
+//			screenY += gp.tileM.actualYkameraMovement;
+//		}
+//		else {
+//			screenY -= gp.tileM.actualYkameraMovement;
+//		}
+
 		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-		
+
+	}
+	public int getX() {
+		return screenX;
+	}
+
+	public int getY(){
+		return screenY;
 	}
 }

@@ -52,9 +52,9 @@ public class Interface {
 	public void drawMenu(Graphics2D g2) {
 			if(gp.keyH.escPressed == true) {
 			g2.setColor(transparentGrey);
-			g2.fillRoundRect(0, 0, gp.worldWidth, gp.worldHeight, 10, 10);
+			g2.fillRoundRect(0, 0, gp.worldWidth, gp.worldHeight, 10, 0); // damit das Bild grau wird
 			g2.setColor(transparentDarkGrey);
-			g2.fillRoundRect(192, 144, 1054, 575, 10, 10);
+			g2.fillRoundRect((gp.worldWidth/2)-500, (gp.worldHeight/2)-250, 1000, 500, 10, 10); // das richtige menu Bild
 			
 			Color white = new Color(255, 255, 255);
 			g2.setColor(white);

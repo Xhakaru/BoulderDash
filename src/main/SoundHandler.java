@@ -16,6 +16,11 @@ public class SoundHandler {
         sounds.put("win-nt-startup", new Sound(SoundHandler.class.getResource("/sound/WindowsNTStartup.wav")));
         sounds.put("win-nt-shutdown", new Sound(SoundHandler.class.getResource("/sound/WindowsNTShuttdown.wav")));
         sounds.put("eat", new Sound(SoundHandler.class.getResource("/sound/Eat.wav")));
+        sounds.put("stoneFall", new Sound(SoundHandler.class.getResource("/sound/StoneFall.wav")));
+        sounds.put("FireAndSword", new Sound(SoundHandler.class.getResource("/sound/FireAndSword.wav")));
+        sounds.put("FireAndSwordMain", new Sound(SoundHandler.class.getResource("/sound/FireAndSwordMain.wav")));
+        sounds.put("MainOST", new Sound(SoundHandler.class.getResource("/sound/MainOST.wav")));
+        sounds.put("Death", new Sound(SoundHandler.class.getResource("/sound/Death.wav")));
     }
 
     public static Sound getSound(String soundName){

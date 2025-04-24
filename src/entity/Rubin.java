@@ -91,22 +91,9 @@ public class Rubin extends Entity{
 				return rubin_f7;
 			case(9):
 				return rubin_f8;
-			case(10):
-				return rubin_f1;
-			case(11):
-				return rubin_f1;
-			case(12):
-				return rubin_f1;
-			case(13):
-				return rubin_f1;
-			case(14):
-				return rubin_f1;
-			case(15):
-				return rubin_f1;
-			case(16):
+			default:
 				return rubin_f1;
 		}
-		return null;
 	}
 	
 	public void rubinFall() {
